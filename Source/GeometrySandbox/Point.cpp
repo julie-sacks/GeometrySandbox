@@ -13,11 +13,11 @@
 
 APoint::APoint() //: MeshObj(TEXT("/Game/StarterContent/Props/MaterialSphere.MaterialSphere"))
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("point constructor"));
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("point constructor"));
 
 	//MeshObj = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("/Game/StarterContent/Props/MaterialSphere.MaterialSphere"));
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PointMesh"));
-	if (!mesh) GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Purple, TEXT("WARNING: null mesh immediately after it is set"));
+	//if (!mesh) GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Purple, TEXT("WARNING: null mesh immediately after it is set"));
 	//RootComponent = mesh;
 
 	// load assets
@@ -26,7 +26,7 @@ APoint::APoint() //: MeshObj(TEXT("/Game/StarterContent/Props/MaterialSphere.Mat
 	mesh->SetStaticMesh(GetMesh().Object);
 	mesh->SetMaterial(0, GetMaterialDefault().Object);
 	//mesh.
-	if (!mesh) GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Purple, TEXT("WARNING: null mesh at end of constructor"));
+	//if (!mesh) GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Purple, TEXT("WARNING: null mesh at end of constructor"));
 
 }
 

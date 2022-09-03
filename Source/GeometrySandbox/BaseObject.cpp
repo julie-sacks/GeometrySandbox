@@ -31,7 +31,7 @@ ConstructorHelpers::FObjectFinder<UStaticMesh>& ABaseObject::GetMesh() const
 
 ConstructorHelpers::FObjectFinder<UMaterial>& ABaseObject::GetMaterialDefault() const
 {
-	static ConstructorHelpers::FObjectFinder<UMaterial> textureDefault(TEXT("Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> textureDefault(TEXT("Material'/Game/M_BasicMaterial.M_BasicMaterial'"));
 	//static ConstructorHelpers::FObjectFinder<UMaterial> textureDefault(TEXT("Material'/Game/StarterContent/Materials/M_Metal_Brushed_Nickel.M_Metal_Brushed_Nickel'"));
 	return textureDefault;
 }
@@ -68,15 +68,21 @@ void ABaseObject::AddChild(int child)
 
 void ABaseObject::Highlight(bool state)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Highlight"));
-	if (!mesh) GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("WARNING: mesh is null"));
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Highlight"));
+	if (!mesh)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("WARNING: mesh is null"));
+		return;
+	}
 	if (state)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Highlight: ON"));
 		if (mesh && materialHighlight) mesh->SetMaterial(0, materialHighlight);
 		else GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("WARNING: missing highlight material"));
 	}
 	else
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Highlight: OFF"));
 		if (mesh && materialDefault) mesh->SetMaterial(0, materialDefault);
 		else GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, TEXT("WARNING: missing default material"));
 	}
