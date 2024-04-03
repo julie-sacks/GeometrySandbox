@@ -1,10 +1,15 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
+
 class Scene
 {
 private:
 
+protected:
+    GLFWwindow* window;
 public:
+    Scene(GLFWwindow* window_) : window(window_) {}
     // steps for running scene
     virtual void Load();
     virtual void Init();
