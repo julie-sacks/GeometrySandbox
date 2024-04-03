@@ -14,7 +14,8 @@ set( TARGET_NAME geom )
 
 add_executable( ${TARGET_NAME}
         ./src/main.cpp
-        ./src/genericShape.cpp )
+        ./src/genericShape.cpp
+        ./src/scene.cpp )
 
 if (UNIX)
     add_compile_options( -g )
