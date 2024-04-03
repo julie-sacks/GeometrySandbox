@@ -13,7 +13,8 @@ find_package( GLEW REQUIRED )
 set( TARGET_NAME geom )
 
 add_executable( ${TARGET_NAME}
-        ./src/main.cpp )
+        ./src/main.cpp
+        ./src/genericShape.cpp )
 
 if (UNIX)
     add_compile_options( -g )
