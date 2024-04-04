@@ -6,6 +6,9 @@ class TestScene : public Scene
 {
 private:
     int frameCount = 0;
+    GLuint shaderProgram;
+    GLuint vbo;
+    GLuint vao;
 public:
     TestScene(GLFWwindow* window) : Scene(window) {}
     // steps for running scene

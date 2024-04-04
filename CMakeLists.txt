@@ -16,7 +16,8 @@ add_executable( ${TARGET_NAME}
         ./src/main.cpp
         ./src/genericShape.cpp
         ./src/scene.cpp
-        ./src/testScene.cpp )
+        ./src/testScene.cpp
+        ./src/shader.cpp )
 
 if (UNIX)
     add_compile_options( -g )
