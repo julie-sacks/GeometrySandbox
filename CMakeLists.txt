@@ -17,7 +17,8 @@ add_executable( ${TARGET_NAME}
         ./src/genericShape.cpp
         ./src/scene.cpp
         ./src/testScene.cpp
-        ./src/shader.cpp )
+        ./src/shader.cpp
+        ./src/shapeManager.cpp )
 
 if (UNIX)
     add_compile_options( -g )

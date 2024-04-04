@@ -1,40 +1,48 @@
 #include "genericShape.h"
+#include <cassert>
 
 
-int genericShape::idcount = 0;
+int GenericShape::idcount = 0;
 
-int genericShape::getNextId()
+int GenericShape::getNextId()
 {
     return idcount++;
 }
 
-genericShape::genericShape(/* args */) : id(getNextId())
+GenericShape::GenericShape(/* args */) : id(getNextId())
 {
 }
 
-genericShape::~genericShape()
+GenericShape::~GenericShape()
 {
-    for (genericShape* parent : parents)
-    {
-        parent->removeChild(this);
-    }
-    for (genericShape* child : children)
-    {
-        delete child;
-    }
+    // for (GenericShape* parent : parents)
+    // {
+    //     parent->removeChild(this);
+    // }
+    // for (GenericShape* child : children)
+    // {
+    //     delete child;
+    // }
 }
 
-bool genericShape::operator<(const genericShape &rhs) const
+const std::set<GenericShape *> &GenericShape::getChildren() const
 {
-    return id < rhs.id;
+    return children;
 }
 
-void genericShape::addChild(genericShape *child)
+const std::set<GenericShape *> &GenericShape::getParents() const
 {
-    children.insert(child);
+    return parents;
 }
 
-void genericShape::removeChild(genericShape *child)
+void GenericShape::addChild(GenericShape *child)
 {
+    bool result = children.insert(child).second;
+    assert(!result);
+}
+
+void GenericShape::removeChild(GenericShape *child)
+{
+    // search for the element and delete it
     children.erase(child);
 }

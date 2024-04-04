@@ -2,25 +2,22 @@
 
 #include <set>
 
-class genericShape
+class GenericShape
 {
 private:
     static int idcount;
     int getNextId();
-    const int id; // used for exporting to file
-    std::set<genericShape*> parents;
-    std::set<genericShape*> children;
+    std::set<GenericShape*> parents;
+    std::set<GenericShape*> children;
 public:
-    genericShape(/* args */);
-    ~genericShape();
+    const int id;
+    GenericShape(/* args */);
+    ~GenericShape();
 
-    // for set ordering
-    bool operator<(const genericShape& rhs) const;
-
-    const std::set<genericShape*>& getChildren() const;
-    const std::set<genericShape*>& getParents() const;
+    const std::set<GenericShape*>& getChildren() const;
+    const std::set<GenericShape*>& getParents() const;
 
     // feels weird to have different indices for these, might want to reference a global object list using id instead of pointers directly to the objects
-    void addChild(genericShape* child);
-    void removeChild(genericShape* child);
+    void addChild(GenericShape* child);
+    void removeChild(GenericShape* child);
 };
