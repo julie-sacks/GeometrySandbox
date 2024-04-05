@@ -2,6 +2,18 @@
 
 #include <set>
 
+enum class ShapeType
+{
+    None = -1,
+    Point,
+    Line,
+    Segment,
+    Circle,
+    Sphere,
+
+    Count
+};
+
 class GenericShape
 {
 private:
@@ -11,7 +23,8 @@ private:
     std::set<GenericShape*> children;
 public:
     const int id;
-    GenericShape(/* args */);
+    const ShapeType type;
+    GenericShape(ShapeType type);
     ~GenericShape();
 
     const std::set<GenericShape*>& getChildren() const;
