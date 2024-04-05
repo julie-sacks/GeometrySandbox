@@ -34,7 +34,7 @@ GLuint LoadSingleShader(GLuint type, const char* path)
         const char* typestr;
         if(type == GL_VERTEX_SHADER) typestr = "vertex";
         if(type == GL_FRAGMENT_SHADER) typestr = "fragment";
-        std::cout << "ERROR: could not compile %s shader.\n" << infoLog << std::endl;
+        std::cout << "ERROR: could not compile " << typestr << " shader.\n" << infoLog << std::endl;
     }
 
     // std::cout << codestr.c_str() << std::endl;

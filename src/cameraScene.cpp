@@ -90,6 +90,30 @@ static std::pair<std::vector<vec3>, std::vector<uivec3>> GenSphere(int steps = 5
     return std::pair<std::vector<vec3>, std::vector<uivec3>>(pts, idx);
 }
 
+void CameraScene::PollInputs()
+{
+    inputs.prevState = inputs.currState;
+    // go through each key code (including invalid ones for simplicity)
+    for(int i = 0; i <= GLFW_KEY_LAST; ++i)
+    {
+        bool state = glfwGetKey(window, i);
+        if(state == GLFW_INVALID_ENUM) continue;
+        inputs.currState[i] = (state == GLFW_PRESS);
+    }
+}
+
+void CameraScene::HandleInputs(float dt)
+{
+    if(inputs.GetDown(GLFW_KEY_W))
+        cameraPos.z -= 1*dt;
+    if(inputs.GetDown(GLFW_KEY_A))
+        cameraPos.x -= 1*dt;
+    if(inputs.GetDown(GLFW_KEY_S))
+        cameraPos.z += 1*dt;
+    if(inputs.GetDown(GLFW_KEY_D))
+        cameraPos.x += 1*dt;
+}
+
 void CameraScene::Load()
 {
     shaderProgram = LoadShaders("./shader/test.vert", "./shader/test.frag");
@@ -114,41 +138,57 @@ void CameraScene::Load()
 
 void CameraScene::Init()
 {
-    printf("initializing test scene\n");
+    printf("initializing camera scene\n");
 }
 
 void CameraScene::PreRender(float dt)
 {
-    //printf("pre-render test scene\n");
-    //frameCount++;
+    PollInputs();
+    HandleInputs(dt);
 }
 
 void CameraScene::Render(float dt)
 {
     glClearColor(0.1f, 0.3f, 0.1f, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-    //printf("rendering  test scene\n");
-
+    //printf("rendering camera scene\n");
     glUseProgram(shaderProgram);
+
+    GLint ulocOffset = glGetUniformLocation(shaderProgram, "offset");
+    glUniform3fv(ulocOffset, 1, &cameraPos[0]);
+
     glBindVertexArray(vao);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
     glUseProgram(0);
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 void CameraScene::PostRender(float dt)
 {
-    //printf("post-render test scene\n");
+    //printf("post-render camera scene\n");
     //if(frameCount >= 3) glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 void CameraScene::Shutdown()
 {
-    printf("shutting down test scene\n");
+    printf("shutting down camera scene\n");
 }
 
 void CameraScene::Unload()
 {
-    printf("unloading test scene\n");
+    printf("unloading camera scene\n");
+}
+
+bool InputState::GetTriggered(int glfw_key_code) const
+{
+    return currState[glfw_key_code] && !prevState[glfw_key_code];
+}
+
+bool InputState::GetReleased(int glfw_key_code) const
+{
+    return !currState[glfw_key_code] && prevState[glfw_key_code];;
+}
+
+bool InputState::GetDown(int glfw_key_code) const
+{
+    return currState[glfw_key_code];
 }
