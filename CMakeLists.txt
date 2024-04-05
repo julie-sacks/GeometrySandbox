@@ -18,7 +18,8 @@ add_executable( ${TARGET_NAME}
         ./src/scene.cpp
         ./src/testScene.cpp
         ./src/shader.cpp
-        ./src/shapeManager.cpp )
+        ./src/shapeManager.cpp
+        ./src/cameraScene.cpp )
 
 if (UNIX)
     add_compile_options( -g )

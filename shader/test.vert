@@ -11,5 +11,6 @@ vec3 points[3] = vec3[](
 void main()
 {
     gl_Position = vec4(pos, 1);
+    fragColorFromVert = pos;
     //gl_Position.w = 1;
 }

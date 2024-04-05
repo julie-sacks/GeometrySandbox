@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "testScene.h"
+#include "cameraScene.h"
 
 int main(void)
 {
@@ -32,7 +33,7 @@ int main(void)
     }
 
     printf("gl version: %s\n", glGetString(GL_VERSION));
-    Scene* scene = new TestScene(window);
+    Scene* scene = new CameraScene(window);
 
     scene->Load();
     scene->Init();
