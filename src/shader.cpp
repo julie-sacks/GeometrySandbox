@@ -31,7 +31,10 @@ GLuint LoadSingleShader(GLuint type, const char* path)
     if(!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        const char* typestr;
+        if(type == GL_VERTEX_SHADER) typestr = "vertex";
+        if(type == GL_FRAGMENT_SHADER) typestr = "fragment";
+        std::cout << "ERROR: could not compile %s shader.\n" << infoLog << std::endl;
     }
 
     // std::cout << codestr.c_str() << std::endl;
@@ -54,7 +57,9 @@ GLuint LoadShaders(const char *vertexPath, const char *fragmentPath)
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR: could not link shader program.\n" << infoLog << std::endl;
+        glDeleteProgram(program);
+        program = 0;
     }
 
     glDeleteShader(VertID);
