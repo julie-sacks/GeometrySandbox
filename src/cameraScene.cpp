@@ -112,6 +112,12 @@ void CameraScene::HandleInputs(float dt)
         cameraPos.z += 1*dt;
     if(inputs.GetDown(GLFW_KEY_D))
         cameraPos.x += 1*dt;
+
+    if(inputs.GetTriggered(GLFW_KEY_R))
+        shaderProgram = LoadShaders("./shader/test.vert", "./shader/test.frag");
+    
+    if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 void CameraScene::Load()
