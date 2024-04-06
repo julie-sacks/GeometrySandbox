@@ -31,6 +31,7 @@ private:
 
     // camera variables
     glm::vec3 cameraPos;
+    glm::vec3 cameraRot;
 public:
     CameraScene(GLFWwindow* window) : Scene(window) {}
     // steps for running scene
