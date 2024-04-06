@@ -45,8 +45,8 @@ static std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps = 5)
         {
             float horizangle = M_PI * ((float)j/steps);
             // swap these if tris are inside out
-            float x = r*cosf(horizangle);
-            float z = r*sinf(horizangle);
+            float x = r*sinf(horizangle);
+            float z = r*cosf(horizangle);
 
             pts.push_back(vec3(x,y,z));
         }
@@ -59,7 +59,7 @@ static std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps = 5)
     // bottom disk (0,1,2,  0,2,3,  0,3,4...  0,10,1)
     for(int i = 0; i < steps*2; ++i)
     {
-        idx.push_back(uvec3(0,i+1,(i+1)%(steps*2)+1));
+        idx.push_back(uvec3(0,(i+1)%(steps*2)+1,i+1));
     }
     // rings (1,2,11,  2,12,11,  2,3,12,  3,13,12)
     for(int i = 0; i < steps-2; ++i)
@@ -142,6 +142,8 @@ void CameraScene::Load()
 
     glUseProgram(shaderProgram);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     auto sphere = GenSphere(5);
     idxcount = sphere.second.size()*3;
