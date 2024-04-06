@@ -96,14 +96,30 @@ static std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps = 5)
 
 void CameraScene::PollInputs()
 {
-    inputs.prevState = inputs.currState;
+    inputs.prevKeys = inputs.currKeys;
+    inputs.prevMouseBtn = inputs.currMouseBtn;
+    inputs.prevCursorX = inputs.currCursorX;
+    inputs.prevCursorY = inputs.currCursorY;
+
     // go through each key code (including invalid ones for simplicity)
     for(int i = 0; i <= GLFW_KEY_LAST; ++i)
     {
         bool state = glfwGetKey(window, i);
         if(state == GLFW_INVALID_ENUM) continue;
-        inputs.currState[i] = (state == GLFW_PRESS);
+        inputs.currKeys[i] = (state == GLFW_PRESS);
     }
+
+    for(int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
+    {
+        bool state = glfwGetMouseButton(window, i);
+        if(state == GLFW_INVALID_ENUM) continue;
+        inputs.currMouseBtn[i] = (state == GLFW_PRESS);
+        if(state == GLFW_PRESS)
+        {
+            //printf("pressed btn %d\n", i);
+        }
+    }
+    glfwGetCursorPos(window, &inputs.currCursorX, &inputs.currCursorY);
 }
 
 void CameraScene::HandleInputs(float dt)
@@ -128,6 +144,11 @@ void CameraScene::HandleInputs(float dt)
         cameraRot.x -= 1.0f*dt;
     if(inputs.GetDown(GLFW_KEY_RIGHT))
         cameraRot.x += 1.0f*dt;
+
+    if(inputs.GetMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
+    {
+        cameraRot += vec3(inputs.GetMouseDelta(), 0)*0.01f;
+    }
 
     if(inputs.GetTriggered(GLFW_KEY_R))
         shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
@@ -158,6 +179,8 @@ void CameraScene::Load()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.second.size()*sizeof(uvec3), sphere.second.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
 
 }
 
@@ -200,6 +223,7 @@ void CameraScene::Render(float dt)
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
     glUseProgram(0);
 }
 
@@ -217,19 +241,48 @@ void CameraScene::Shutdown()
 void CameraScene::Unload()
 {
     printf("unloading camera scene\n");
+    glDeleteProgram(shaderProgram);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteVertexArrays(1, &vao);
 }
 
 bool InputState::GetTriggered(int glfw_key_code) const
 {
-    return currState[glfw_key_code] && !prevState[glfw_key_code];
+    return currKeys[glfw_key_code] && !prevKeys[glfw_key_code];
 }
 
 bool InputState::GetReleased(int glfw_key_code) const
 {
-    return !currState[glfw_key_code] && prevState[glfw_key_code];;
+    return !currKeys[glfw_key_code] && prevKeys[glfw_key_code];
 }
 
 bool InputState::GetDown(int glfw_key_code) const
 {
-    return currState[glfw_key_code];
+    return currKeys[glfw_key_code];
+}
+
+bool InputState::GetMouseTriggered(int glfw_mouse_btn) const
+{
+    return currMouseBtn[glfw_mouse_btn] && !prevMouseBtn[glfw_mouse_btn];
+}
+
+bool InputState::GetMouseReleased(int glfw_mouse_btn) const
+{
+    return !currMouseBtn[glfw_mouse_btn] && prevMouseBtn[glfw_mouse_btn];
+}
+
+bool InputState::GetMouseDown(int glfw_mouse_btn) const
+{
+    return currMouseBtn[glfw_mouse_btn];
+}
+
+glm::vec2 InputState::GetMousePos() const
+{
+    return glm::vec2(currCursorX, currCursorY);
+}
+
+glm::vec2 InputState::GetMouseDelta() const
+{
+    return glm::vec2(currCursorX-prevCursorX, currCursorY-prevCursorY);
 }

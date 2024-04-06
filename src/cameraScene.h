@@ -3,11 +3,16 @@
 #include "scene.h"
 #include <bitset>
 #include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 struct InputState
 {
-    std::bitset<GLFW_KEY_LAST+1> currState;
-    std::bitset<GLFW_KEY_LAST+1> prevState;
+    std::bitset<GLFW_KEY_LAST+1> currKeys;
+    std::bitset<GLFW_KEY_LAST+1> prevKeys;
+    std::bitset<GLFW_MOUSE_BUTTON_LAST+1> currMouseBtn;
+    std::bitset<GLFW_MOUSE_BUTTON_LAST+1> prevMouseBtn;
+    double currCursorX, currCursorY;
+    double prevCursorX, prevCursorY;
 public:
     // key transitioned to down on this frame
     bool GetTriggered(int glfw_key_code) const;
@@ -17,6 +22,12 @@ public:
     bool GetDown(int glfw_key_code) const;
     // key is up on this frame (this is just !GetDown())
     //bool GetUp(int glfw_key_code) const;
+    bool GetMouseTriggered(int glfw_mouse_btn) const;
+    bool GetMouseReleased(int glfw_mouse_btn) const;
+    bool GetMouseDown(int glfw_mouse_btn) const;
+
+    glm::vec2 GetMousePos() const;
+    glm::vec2 GetMouseDelta() const;
 };
 
 class CameraScene : public Scene
