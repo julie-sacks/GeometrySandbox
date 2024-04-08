@@ -45,6 +45,5 @@ public:
     void addChild(GenericShape* child);
     void removeChild(GenericShape* child);
 
-    // needed uniforms: mat4 modelToWorld
     virtual glm::mat4 getModelToWorldMat() const = 0;
 };

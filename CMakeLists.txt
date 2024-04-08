@@ -20,7 +20,8 @@ add_executable( ${TARGET_NAME}
         ./src/shader.cpp
         ./src/shapeManager.cpp
         ./src/cameraScene.cpp
-        ./src/point.cpp )
+        ./src/point.cpp
+        ./src/genShapeModels.cpp )
 
 if (UNIX)
     add_compile_options( -g )

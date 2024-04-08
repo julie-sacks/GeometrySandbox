@@ -137,6 +137,10 @@ void CameraScene::HandleInputs(float dt)
         cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,0,1,0));
     if(inputs.GetDown(GLFW_KEY_D))
         cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(1,0,0,0));
+    if(inputs.GetDown(GLFW_KEY_SPACE))
+        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,1,0,0));
+    if(inputs.GetDown(GLFW_KEY_LEFT_SHIFT))
+        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,-1,0,0));
 
     if(inputs.GetDown(GLFW_KEY_UP))
         cameraRot.y += 1.0f*dt;
@@ -229,13 +233,7 @@ void CameraScene::Render(float dt)
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
-    for(const GenericShape* shape : manager.GetShapeList())
-    {
-        // only points rn
-        modelToWorld = shape->getModelToWorldMat();
-        glUniformMatrix4fv(ulModelToWorld, 1, false, &modelToWorld[0][0]);
-        glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
-    }
+    manager.Draw(shaderProgram);
     glBindVertexArray(0);
     glUseProgram(0);
 }
