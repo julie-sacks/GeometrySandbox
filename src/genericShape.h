@@ -24,13 +24,23 @@ enum class ShapeVisual
     Count
 };
 
+class GenericShape;
+
+class ShapeIdLess
+{
+public:
+    bool operator()(const GenericShape* lhs, const GenericShape* rhs) const;
+};
+
+typedef std::set<GenericShape*, ShapeIdLess> ShapeSet;
+
 class GenericShape
 {
 private:
     static int idcount;
     int getNextId();
-    std::set<GenericShape*> parents;
-    std::set<GenericShape*> children;
+    ShapeSet parents;
+    ShapeSet children;
 public:
     const int id;
     const ShapeType type;
@@ -38,8 +48,8 @@ public:
     GenericShape(ShapeType type, ShapeVisual visual);
     ~GenericShape();
 
-    const std::set<GenericShape*>& getChildren() const;
-    const std::set<GenericShape*>& getParents() const;
+    const ShapeSet& getChildren() const;
+    const ShapeSet& getParents() const;
 
     // feels weird to have different indices for these, might want to reference a global object list using id instead of pointers directly to the objects
     void addChild(GenericShape* child);

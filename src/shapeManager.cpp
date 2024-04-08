@@ -77,7 +77,7 @@ void ShapeManager::RemoveShape(GenericShape* shape)
         parent->removeChild(shape);
     }
     // a little memory inefficient, but it should work
-    std::set<GenericShape*> templist = shape->getChildren();
+    ShapeSet templist = shape->getChildren();
     for(auto child : templist)
     {
         RemoveShape(child);
@@ -85,7 +85,7 @@ void ShapeManager::RemoveShape(GenericShape* shape)
     delete shape;
 }
 
-const std::set<GenericShape*>& ShapeManager::GetShapeList() const
+const ShapeSet& ShapeManager::GetShapeList() const
 {
     return shapeList;
 }

@@ -7,7 +7,7 @@
 class ShapeManager
 {
 private:
-    std::set<GenericShape*> shapeList;
+    ShapeSet shapeList;
     mutable unsigned int vaos[(size_t)ShapeVisual::Count] {0};
     mutable unsigned int vbos[(size_t)ShapeVisual::Count] {0};
     mutable unsigned int ebos[(size_t)ShapeVisual::Count] {0};
@@ -20,7 +20,7 @@ public:
     ~ShapeManager();
     void AddShape(GenericShape* shape);
     void RemoveShape(GenericShape* shape);
-    const std::set<GenericShape*>& GetShapeList() const;
+    const ShapeSet& GetShapeList() const;
     // before calling, configure all uniforms other than `mat4 ModelToWorld`
     void Draw(unsigned int shader) const;
 };

@@ -26,12 +26,12 @@ GenericShape::~GenericShape()
     // }
 }
 
-const std::set<GenericShape *> &GenericShape::getChildren() const
+const ShapeSet &GenericShape::getChildren() const
 {
     return children;
 }
 
-const std::set<GenericShape *> &GenericShape::getParents() const
+const ShapeSet &GenericShape::getParents() const
 {
     return parents;
 }
@@ -46,4 +46,9 @@ void GenericShape::removeChild(GenericShape *child)
 {
     // search for the element and delete it
     children.erase(child);
+}
+
+bool ShapeIdLess::operator()(const GenericShape *lhs, const GenericShape *rhs) const
+{
+    return lhs->id < rhs->id;
 }
