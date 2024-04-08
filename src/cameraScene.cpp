@@ -8,6 +8,8 @@
 #include <cmath>
 #include <cassert>
 
+#include "point.h"
+
 #define GLM_SWIZZLE
 #include <glm/vec3.hpp>
 #include <glm/gtx/transform.hpp>
@@ -149,6 +151,10 @@ void CameraScene::HandleInputs(float dt)
     {
         cameraRot += vec3(inputs.GetMouseDelta(), 0)*0.01f;
     }
+    if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_LEFT))
+    {
+        manager.AddShape(new Point(cameraPos));
+    }
 
     if(inputs.GetTriggered(GLFW_KEY_R))
         shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
@@ -223,6 +229,13 @@ void CameraScene::Render(float dt)
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
+    for(const GenericShape* shape : manager.GetShapeList())
+    {
+        // only points rn
+        modelToWorld = shape->getModelToWorldMat();
+        glUniformMatrix4fv(ulModelToWorld, 1, false, &modelToWorld[0][0]);
+        glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
+    }
     glBindVertexArray(0);
     glUseProgram(0);
 }

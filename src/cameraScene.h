@@ -4,6 +4,7 @@
 #include <bitset>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
+#include "shapeManager.h"
 
 struct InputState
 {
@@ -43,6 +44,8 @@ private:
     // camera variables
     glm::vec3 cameraPos;
     glm::vec3 cameraRot;
+
+    ShapeManager manager;
 public:
     CameraScene(GLFWwindow* window) : Scene(window) {}
     // steps for running scene

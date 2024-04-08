@@ -1,5 +1,18 @@
 #include "shapeManager.h"
 
+ShapeManager::~ShapeManager()
+{
+    for(GenericShape* shape : shapeList)
+    {
+        delete shape;
+    }
+}
+
+void ShapeManager::AddShape(GenericShape* shape)
+{
+    shapeList.insert(shape);
+}
+
 void ShapeManager::RemoveShape(GenericShape* shape)
 {
     if(shapeList.find(shape) == shapeList.end()) return;
@@ -17,4 +30,9 @@ void ShapeManager::RemoveShape(GenericShape* shape)
         RemoveShape(child);
     }
     delete shape;
+}
+
+const std::set<GenericShape*>& ShapeManager::GetShapeList() const
+{
+    return shapeList;
 }
