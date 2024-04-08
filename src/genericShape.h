@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <glm/mat4x4.hpp>
 
 enum class ShapeType
 {
@@ -34,7 +35,7 @@ public:
     const int id;
     const ShapeType type;
     const ShapeVisual visual;
-    GenericShape(ShapeType type);
+    GenericShape(ShapeType type, ShapeVisual visual);
     ~GenericShape();
 
     const std::set<GenericShape*>& getChildren() const;
@@ -45,5 +46,5 @@ public:
     void removeChild(GenericShape* child);
 
     // needed uniforms: mat4 modelToWorld
-    virtual void draw(unsigned int shader) const = 0;
+    virtual glm::mat4 getModelToWorldMat() const = 0;
 };

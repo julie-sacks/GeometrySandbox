@@ -9,7 +9,8 @@ int GenericShape::getNextId()
     return idcount++;
 }
 
-GenericShape::GenericShape(ShapeType type) : type(type), id(getNextId())
+GenericShape::GenericShape(ShapeType type, ShapeVisual visual) :
+    type(type), visual(visual), id(getNextId())
 {
 }
 
