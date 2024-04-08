@@ -13,6 +13,15 @@ enum class ShapeType
 
     Count
 };
+enum class ShapeVisual
+{
+    None = -1,
+    Sphere,
+    Line,
+    Circle,
+
+    Count
+};
 
 class GenericShape
 {
@@ -24,6 +33,7 @@ private:
 public:
     const int id;
     const ShapeType type;
+    const ShapeVisual visual;
     GenericShape(ShapeType type);
     ~GenericShape();
 
@@ -33,4 +43,7 @@ public:
     // feels weird to have different indices for these, might want to reference a global object list using id instead of pointers directly to the objects
     void addChild(GenericShape* child);
     void removeChild(GenericShape* child);
+
+    // needed uniforms: mat4 modelToWorld
+    virtual void draw(unsigned int shader) const = 0;
 };
