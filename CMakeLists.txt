@@ -21,7 +21,8 @@ add_executable( ${TARGET_NAME}
         ./src/shapeManager.cpp
         ./src/cameraScene.cpp
         ./src/point.cpp
-        ./src/genShapeModels.cpp )
+        ./src/genShapeModels.cpp
+        ./src/pfd.cpp )
 
 if (UNIX)
     add_compile_options( -g )
