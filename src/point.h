@@ -7,6 +7,7 @@
 
 class Point : public GenericShape
 {
+friend class ShapeManager;
 private:
     glm::vec3 pos;
 

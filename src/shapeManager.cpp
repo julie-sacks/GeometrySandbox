@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <cassert>
+#include "point.h"
 
 void ShapeManager::GenVao(ShapeVisual visual) const
 {
@@ -61,8 +62,19 @@ ShapeManager::~ShapeManager()
     glDeleteBuffers((int)ShapeVisual::Count, vbos);
 }
 
+void ShapeManager::ClearShapes()
+{
+    for(auto& shape : shapeList)
+    {
+        delete shape.second;
+    }
+    shapeList.clear();
+    GenericShape::idcount = 0;
+}
+
 void ShapeManager::AddShape(GenericShape* shape)
 {
+    assert(shapeList.find(shape->id) == shapeList.end());
     shapeList.insert({shape->id, shape});
 }
 
@@ -117,4 +129,41 @@ void ShapeManager::Draw(unsigned int shader) const
         glDrawElements(GL_TRIANGLES, GetIdxCount(shape.second->visual), GL_UNSIGNED_INT, 0);
     }
     glBindVertexArray(0);
+}
+
+void ShapeManager::LoadFromFile(const char *path)
+{
+    ClearShapes();
+    int maxid = 0;
+    // loop through shapes in file
+    {
+        // read id from file
+        GenericShape::idcount = 1; // this is a way to set the id of the next genned shape
+        // read what type to generate
+        ShapeType type = ShapeType::Point;
+        GenericShape* shape;
+        // read type-specific params in switch statement
+        switch (type)
+        {
+        case ShapeType::Point:
+            shape = new Point(glm::vec3(0));
+
+            // read position
+            dynamic_cast<Point*>(shape)->pos = glm::vec3(1,4,-2);
+            break;
+        
+        default:
+            break;
+        }
+        // read parents
+        shape->parents = {};
+        // read children
+        shape->children = {};
+
+        AddShape(shape);
+        // update maxid
+        maxid = (GenericShape::idcount > maxid) ? GenericShape::idcount : maxid;
+    }
+    // ensure the next object created has a valid id
+    GenericShape::idcount = maxid;
 }

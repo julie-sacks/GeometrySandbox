@@ -39,6 +39,7 @@ class GenericShape
 {
 friend class ShapeManager;
 private:
+friend class ShapeManager;
     static int idcount;
     int getNextId();
     std::vector<int> parents;

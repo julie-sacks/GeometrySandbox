@@ -162,6 +162,11 @@ void CameraScene::HandleInputs(float dt)
 
     if(inputs.GetTriggered(GLFW_KEY_R))
         shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
+
+    if(inputs.GetTriggered(GLFW_KEY_O))
+    {
+        manager.LoadFromFile("asdf");
+    }
     
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);

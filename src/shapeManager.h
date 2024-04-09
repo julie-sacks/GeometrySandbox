@@ -18,6 +18,7 @@ private:
     unsigned int GetIdxCount(ShapeVisual visual) const;
 public:
     ~ShapeManager();
+    void ClearShapes();
     void AddShape(GenericShape* shape);
     void RemoveShape(int id);
     GenericShape* GetShape(int id);
@@ -25,4 +26,6 @@ public:
     const ShapeSet& GetShapeList() const;
     // before calling, configure all uniforms other than `mat4 ModelToWorld`
     void Draw(unsigned int shader) const;
+
+    void LoadFromFile(const char* path);
 };
