@@ -8,6 +8,9 @@
 #include <cmath>
 #include <cassert>
 #include "portable-file-dialogs.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include "point.h"
 
@@ -184,6 +187,19 @@ void CameraScene::HandleInputs(float dt)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+void CameraScene::GuiRender()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::ShowDemoWindow();
+    //ImGui::BeginMenuBar()
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 void CameraScene::Load()
 {
     shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
@@ -253,6 +269,8 @@ void CameraScene::Render(float dt)
     manager.Draw(shaderProgram);
     glBindVertexArray(0);
     glUseProgram(0);
+
+    GuiRender();
 }
 
 void CameraScene::PostRender(float dt)

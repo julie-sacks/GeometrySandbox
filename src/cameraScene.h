@@ -46,6 +46,9 @@ private:
     glm::vec3 cameraRot;
 
     ShapeManager manager;
+
+    // imgui
+    void GuiRender();
 public:
     CameraScene(GLFWwindow* window) : Scene(window) {}
     // steps for running scene

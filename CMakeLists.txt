@@ -22,7 +22,9 @@ add_executable( ${TARGET_NAME}
         ./src/cameraScene.cpp
         ./src/point.cpp
         ./src/genShapeModels.cpp
-        ./src/pfd.cpp )
+        ./src/pfd.cpp
+        
+        ./imgui/imgui_single_file.cpp )
 
 if (UNIX)
     add_compile_options( -g )
