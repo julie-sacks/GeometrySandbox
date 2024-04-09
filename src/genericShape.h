@@ -1,6 +1,6 @@
 #pragma once
 
-#include <set>
+#include <map>
 #include <glm/mat4x4.hpp>
 
 enum class ShapeType
@@ -32,7 +32,7 @@ public:
     bool operator()(const GenericShape* lhs, const GenericShape* rhs) const;
 };
 
-typedef std::set<GenericShape*, ShapeIdLess> ShapeSet;
+typedef std::map<int, GenericShape*> ShapeSet;
 
 class GenericShape
 {

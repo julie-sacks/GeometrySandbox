@@ -52,9 +52,9 @@ unsigned int ShapeManager::GetIdxCount(ShapeVisual visual) const
 
 ShapeManager::~ShapeManager()
 {
-    for(GenericShape* shape : shapeList)
+    for(auto& shape : shapeList)
     {
-        delete shape;
+        delete shape.second;
     }
     glDeleteVertexArrays((int)ShapeVisual::Count, vaos);
     glDeleteBuffers((int)ShapeVisual::Count, vbos);
@@ -63,24 +63,24 @@ ShapeManager::~ShapeManager()
 
 void ShapeManager::AddShape(GenericShape* shape)
 {
-    shapeList.insert(shape);
+    shapeList.insert({shape->id, shape});
 }
 
 void ShapeManager::RemoveShape(GenericShape* shape)
 {
-    if(shapeList.find(shape) == shapeList.end()) return;
+    if(shapeList.find(shape->id) == shapeList.end()) return;
 
-    shapeList.erase(shape);
+    shapeList.erase(shape->id);
 
-    for(auto parent : shape->getParents())
+    for(auto& parent : shape->getParents())
     {
-        parent->removeChild(shape);
+        parent.second->removeChild(shape);
     }
     // a little memory inefficient, but it should work
     ShapeSet templist = shape->getChildren();
-    for(auto child : templist)
+    for(auto& child : templist)
     {
-        RemoveShape(child);
+        RemoveShape(child.second);
     }
     delete shape;
 }
@@ -95,12 +95,12 @@ void ShapeManager::Draw(unsigned int shader) const
     GLint ulModelToWorld = glGetUniformLocation(shader, "modelToWorld");
     assert(ulModelToWorld != -1);
 
-    for(GenericShape* shape : shapeList)
+    for(auto& shape : shapeList)
     {
-        glm::mat4 modelToWorld = shape->getModelToWorldMat();
+        glm::mat4 modelToWorld = shape.second->getModelToWorldMat();
         glUniformMatrix4fv(ulModelToWorld, 1, GL_FALSE, &modelToWorld[0][0]);
-        glBindVertexArray(GetVao(shape->visual));
-        glDrawElements(GL_TRIANGLES, GetIdxCount(shape->visual), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(GetVao(shape.second->visual));
+        glDrawElements(GL_TRIANGLES, GetIdxCount(shape.second->visual), GL_UNSIGNED_INT, 0);
     }
     glBindVertexArray(0);
 }

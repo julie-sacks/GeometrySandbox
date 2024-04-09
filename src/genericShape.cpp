@@ -38,14 +38,14 @@ const ShapeSet &GenericShape::getParents() const
 
 void GenericShape::addChild(GenericShape *child)
 {
-    bool result = children.insert(child).second;
+    bool result = children.insert({child->id, child}).second;
     assert(!result);
 }
 
 void GenericShape::removeChild(GenericShape *child)
 {
     // search for the element and delete it
-    children.erase(child);
+    children.erase(child->id);
 }
 
 bool ShapeIdLess::operator()(const GenericShape *lhs, const GenericShape *rhs) const
