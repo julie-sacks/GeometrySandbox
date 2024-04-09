@@ -165,7 +165,7 @@ void CameraScene::HandleInputs(float dt)
 
     if(inputs.GetTriggered(GLFW_KEY_O))
     {
-        manager.LoadFromFile("asdf");
+        manager.LoadFromFile("./saves/testsavepoints.json");
     }
     
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))

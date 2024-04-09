@@ -4,6 +4,10 @@
 #include <GL/gl.h>
 #include <cassert>
 #include "point.h"
+#include "json.hpp"
+#include <fstream>
+
+using nlohmann::json;
 
 void ShapeManager::GenVao(ShapeVisual visual) const
 {
@@ -131,34 +135,63 @@ void ShapeManager::Draw(unsigned int shader) const
     glBindVertexArray(0);
 }
 
+// TODO: proper data validation
 void ShapeManager::LoadFromFile(const char *path)
 {
+    std::ifstream file(path);
+    if(!file.is_open())
+    {
+        printf("couldn't open file \"%s\" for read\n", path);
+        return;
+    }
+
+    json data = json::parse(file);
+
+    assert(data.find("shapes") != data.end());
+
+
+
     ClearShapes();
     int maxid = 0;
+
+    for(auto entry : data.at("shapes"))
     // loop through shapes in file
     {
         // read id from file
-        GenericShape::idcount = 1; // this is a way to set the id of the next genned shape
+        assert(entry.find("id") != entry.end());
+        GenericShape::idcount = entry.at("id"); // this is a way to set the id of the next genned shape
+
         // read what type to generate
-        ShapeType type = ShapeType::Point;
+        assert(entry.find("type") != entry.end());
+        std::string typestr = entry.at("type");
+        ShapeType type = ShapeType::None;
+        // TODO: expand this list as more shapes get implemented
+        if(typestr.compare("point") == 0)
+            type = ShapeType::Point;
+
         GenericShape* shape;
         // read type-specific params in switch statement
         switch (type)
         {
         case ShapeType::Point:
+        {
             shape = new Point(glm::vec3(0));
 
             // read position
-            dynamic_cast<Point*>(shape)->pos = glm::vec3(1,4,-2);
-            break;
+            assert(entry.find("position") != entry.end());
+            auto position = entry.find("position").value();
+            dynamic_cast<Point*>(shape)->pos = glm::vec3(position[0],position[1],position[2]);
+        }   break;
         
         default:
             break;
         }
         // read parents
-        shape->parents = {};
+        assert(entry.find("parents") != entry.end());
+        shape->parents = {entry.at("parents").begin(), entry.at("parents").end()};
         // read children
-        shape->children = {};
+        assert(entry.find("children") != entry.end());
+        shape->children = {entry.at("children").begin(), entry.at("children").end()};
 
         AddShape(shape);
         // update maxid
