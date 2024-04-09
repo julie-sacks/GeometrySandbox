@@ -26,26 +26,30 @@ GenericShape::~GenericShape()
     // }
 }
 
-const ShapeSet &GenericShape::getChildren() const
+const std::vector<int> &GenericShape::getChildren() const
 {
     return children;
 }
 
-const ShapeSet &GenericShape::getParents() const
+const std::vector<int> &GenericShape::getParents() const
 {
     return parents;
 }
 
-void GenericShape::addChild(GenericShape *child)
+void GenericShape::addChild(int id)
 {
-    bool result = children.insert({child->id, child}).second;
-    assert(!result);
+    children.push_back(id);
 }
 
-void GenericShape::removeChild(GenericShape *child)
+void GenericShape::removeChild(int id)
 {
     // search for the element and delete it
-    children.erase(child->id);
+    for(auto it = children.begin(); it != children.end(); ++it)
+    {
+        if(*it != id) continue;
+        children.erase(it);
+        break;
+    }
 }
 
 bool ShapeIdLess::operator()(const GenericShape *lhs, const GenericShape *rhs) const

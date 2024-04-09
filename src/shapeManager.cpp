@@ -66,23 +66,37 @@ void ShapeManager::AddShape(GenericShape* shape)
     shapeList.insert({shape->id, shape});
 }
 
-void ShapeManager::RemoveShape(GenericShape* shape)
+void ShapeManager::RemoveShape(int id)
 {
-    if(shapeList.find(shape->id) == shapeList.end()) return;
+    assert(shapeList.find(id) == shapeList.end());
+    GenericShape* shape = shapeList.at(id);
+    assert(shape);
 
-    shapeList.erase(shape->id);
+    shapeList.erase(id);
 
     for(auto& parent : shape->getParents())
     {
-        parent.second->removeChild(shape);
+        GetShape(parent)->removeChild(id);
     }
     // a little memory inefficient, but it should work
-    ShapeSet templist = shape->getChildren();
+    std::vector<int> templist = shape->getChildren();
     for(auto& child : templist)
     {
-        RemoveShape(child.second);
+        RemoveShape(child);
     }
     delete shape;
+}
+
+GenericShape* ShapeManager::GetShape(int id)
+{
+    assert(shapeList.find(id) == shapeList.end());
+    return shapeList.at(id);
+}
+
+const GenericShape* ShapeManager::GetShape(int id) const
+{
+    assert(shapeList.find(id) == shapeList.end());
+    return shapeList.at(id);
 }
 
 const ShapeSet& ShapeManager::GetShapeList() const

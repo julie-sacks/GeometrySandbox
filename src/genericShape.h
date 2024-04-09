@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include <glm/mat4x4.hpp>
 
 enum class ShapeType
@@ -36,11 +37,12 @@ typedef std::map<int, GenericShape*> ShapeSet;
 
 class GenericShape
 {
+friend class ShapeManager;
 private:
     static int idcount;
     int getNextId();
-    ShapeSet parents;
-    ShapeSet children;
+    std::vector<int> parents;
+    std::vector<int> children;
 public:
     const int id;
     const ShapeType type;
@@ -48,12 +50,11 @@ public:
     GenericShape(ShapeType type, ShapeVisual visual);
     ~GenericShape();
 
-    const ShapeSet& getChildren() const;
-    const ShapeSet& getParents() const;
+    const std::vector<int>& getChildren() const;
+    const std::vector<int>& getParents() const;
 
-    // feels weird to have different indices for these, might want to reference a global object list using id instead of pointers directly to the objects
-    void addChild(GenericShape* child);
-    void removeChild(GenericShape* child);
+    void addChild(int id);
+    void removeChild(int id);
 
     virtual glm::mat4 getModelToWorldMat() const = 0;
 };

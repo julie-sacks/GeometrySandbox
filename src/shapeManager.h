@@ -19,7 +19,9 @@ private:
 public:
     ~ShapeManager();
     void AddShape(GenericShape* shape);
-    void RemoveShape(GenericShape* shape);
+    void RemoveShape(int id);
+    GenericShape* GetShape(int id);
+    const GenericShape* GetShape(int id) const;
     const ShapeSet& GetShapeList() const;
     // before calling, configure all uniforms other than `mat4 ModelToWorld`
     void Draw(unsigned int shader) const;
