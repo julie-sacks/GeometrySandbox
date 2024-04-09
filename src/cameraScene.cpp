@@ -167,7 +167,12 @@ void CameraScene::HandleInputs(float dt)
     {
         manager.LoadFromFile("./saves/testsavepoints.json");
     }
-    
+
+    if(inputs.GetTriggered(GLFW_KEY_P))
+    {
+        manager.SaveToFile("./saves/saveoutput.json");
+    }
+
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }

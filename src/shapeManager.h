@@ -28,4 +28,5 @@ public:
     void Draw(unsigned int shader) const;
 
     void LoadFromFile(const char* path);
+    void SaveToFile(const char* path);
 };

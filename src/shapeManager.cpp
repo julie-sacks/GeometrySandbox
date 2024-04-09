@@ -6,6 +6,7 @@
 #include "point.h"
 #include "json.hpp"
 #include <fstream>
+#include <iostream>
 
 using nlohmann::json;
 
@@ -199,4 +200,38 @@ void ShapeManager::LoadFromFile(const char *path)
     }
     // ensure the next object created has a valid id
     GenericShape::idcount = maxid;
+}
+
+void ShapeManager::SaveToFile(const char* path)
+{
+    std::ofstream file(path);
+
+    json data;
+    data["shapes"] = json::array();
+    for(const auto& shape : shapeList)
+    {
+        json shapedata;
+        // store id
+        shapedata["id"] = shape.second->id;
+        // store parents and children
+        shapedata["parents"] = shape.second->parents;
+        shapedata["children"] = shape.second->children;
+
+        // store type and type-related members
+        switch (shape.second->type)
+        {
+        case ShapeType::Point:
+        {
+            shapedata["type"] = "point";
+            glm::vec3& pos = dynamic_cast<Point*>(shape.second)->pos;
+            shapedata["position"] = {pos.x, pos.y, pos.z};
+        }   break;
+        
+        default:
+            break;
+        }
+
+        data["shapes"].push_back(shapedata);
+    }
+    file << data.dump(4);
 }
