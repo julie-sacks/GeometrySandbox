@@ -1,7 +1,8 @@
 #include "genShapeModels.h"
 #include <cmath>
 
-using glm::vec3, glm::uvec3;
+using glm::vec3;
+using glm::uvec3;
 
 // generate a list of vertices in rings from bottom to top and its corresponding indices
 std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps)
