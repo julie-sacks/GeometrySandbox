@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <cassert>
+#include "portable-file-dialogs.h"
 
 #include "point.h"
 
@@ -165,12 +166,18 @@ void CameraScene::HandleInputs(float dt)
 
     if(inputs.GetTriggered(GLFW_KEY_O))
     {
-        manager.LoadFromFile("./saves/testsavepoints.json");
+        auto selection = pfd::open_file("Open file","",
+            std::vector<std::string>{"JSON Files", "*.json *.jsonc", "All Files", "*"}).result();
+        if(!selection.empty())
+            manager.LoadFromFile(selection[0].c_str());
     }
 
     if(inputs.GetTriggered(GLFW_KEY_P))
     {
-        manager.SaveToFile("./saves/saveoutput.json");
+        auto selection = pfd::save_file("Save file to...","",
+            std::vector<std::string>{"JSON Files", "*.json *.jsonc", "All Files", "*"}).result();
+        if(!selection.empty())
+            manager.SaveToFile(selection.c_str());
     }
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
