@@ -130,6 +130,25 @@ void CameraScene::PollInputs()
 
 void CameraScene::HandleInputs(float dt)
 {
+    // commands
+    if(inputs.GetDown(GLFW_KEY_LEFT_CONTROL) || inputs.GetDown(GLFW_KEY_RIGHT_CONTROL))
+    {
+        if(inputs.GetTriggered(GLFW_KEY_R))
+            shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
+
+        if(inputs.GetTriggered(GLFW_KEY_O))
+        {
+            OpenFileDialog();
+        }
+
+        if(inputs.GetTriggered(GLFW_KEY_S))
+        {
+            SaveFileAuto();
+        }
+        return;
+    }
+
+    // handle non-command inputs
     glm::mat4 cameraTrans = glm::rotate(-cameraRot.x, vec3(0,1,0)) *
                             glm::rotate(-cameraRot.y, vec3(1,0,0));
 
@@ -164,27 +183,46 @@ void CameraScene::HandleInputs(float dt)
         manager.AddShape(new Point(cameraPos));
     }
 
-    if(inputs.GetTriggered(GLFW_KEY_R))
-        shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
-
-    if(inputs.GetTriggered(GLFW_KEY_O))
-    {
-        auto selection = pfd::open_file("Open file","",
-            std::vector<std::string>{"JSON Files", "*.json *.jsonc", "All Files", "*"}).result();
-        if(!selection.empty())
-            manager.LoadFromFile(selection[0].c_str());
-    }
-
-    if(inputs.GetTriggered(GLFW_KEY_P))
-    {
-        auto selection = pfd::save_file("Save file to...","",
-            std::vector<std::string>{"JSON Files", "*.json *.jsonc", "All Files", "*"}).result();
-        if(!selection.empty())
-            manager.SaveToFile(selection.c_str());
-    }
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+bool CameraScene::OpenFileDialog()
+{
+    auto selection = pfd::open_file("Open file","",
+        std::vector<std::string>{"JSON Files", "*.json *.jsonc", "All Files", "*"}).result();
+    if(selection.empty()) return false;
+    
+    manager.LoadFromFile(selection[0].c_str());
+    currentFilePath = selection[0];
+    return true;
+}
+
+bool CameraScene::SaveFileToPath(const std::string& path)
+{
+    currentFilePath = path;
+    return manager.SaveToFile(path.c_str());
+}
+
+bool CameraScene::SaveFileDialog()
+{
+    auto selection = pfd::save_file("Save file to...","",
+        std::vector<std::string>{"JSON Files", "*.json *.jsonc", "All Files", "*"}).result();
+    if(selection.empty()) return false;
+
+    return SaveFileToPath(selection);
+}
+
+bool CameraScene::SaveFileAuto()
+{
+    bool result = false;
+    if(!currentFilePath.empty())
+        result = SaveFileToPath(currentFilePath);
+    if(result) return true;
+    
+    // if either no file is loaded or it failed to save to the existing path
+    return SaveFileDialog();
 }
 
 void CameraScene::GuiRender()
@@ -193,8 +231,19 @@ void CameraScene::GuiRender()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
-    //ImGui::BeginMenuBar()
+    //ImGui::ShowDemoWindow();
+    if(ImGui::BeginMainMenuBar())
+    {
+        if(ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("New", "Ctrl+N")) {manager.ClearShapes();}
+            if (ImGui::MenuItem("Open", "Ctrl+O")) {OpenFileDialog();}
+            if (ImGui::MenuItem("Save", "Ctrl+S")) {SaveFileAuto();}
+            if (ImGui::MenuItem("Save As...")) {SaveFileDialog();}
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

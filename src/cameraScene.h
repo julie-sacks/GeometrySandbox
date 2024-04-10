@@ -47,6 +47,13 @@ private:
 
     ShapeManager manager;
 
+    // file io helpers
+    std::string currentFilePath;
+    bool OpenFileDialog();
+    bool SaveFileToPath(const std::string& path);
+    bool SaveFileDialog();
+    bool SaveFileAuto();
+
     // imgui
     void GuiRender();
 public:

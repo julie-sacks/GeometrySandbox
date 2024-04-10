@@ -137,13 +137,13 @@ void ShapeManager::Draw(unsigned int shader) const
 }
 
 // TODO: proper data validation
-void ShapeManager::LoadFromFile(const char *path)
+bool ShapeManager::LoadFromFile(const char *path)
 {
     std::ifstream file(path);
     if(!file.is_open())
     {
         printf("couldn't open file \"%s\" for read\n", path);
-        return;
+        return false;
     }
 
     json data = json::parse(file);
@@ -200,11 +200,18 @@ void ShapeManager::LoadFromFile(const char *path)
     }
     // ensure the next object created has a valid id
     GenericShape::idcount = maxid;
+
+    return true;
 }
 
-void ShapeManager::SaveToFile(const char* path)
+bool ShapeManager::SaveToFile(const char* path)
 {
     std::ofstream file(path);
+    if(!file.is_open())
+    {
+        printf("couldn't open file \"%s\" for write\n", path);
+        return false;
+    }
 
     json data;
     data["shapes"] = json::array();
@@ -234,4 +241,6 @@ void ShapeManager::SaveToFile(const char* path)
         data["shapes"].push_back(shapedata);
     }
     file << data.dump(4);
+
+    return true;
 }

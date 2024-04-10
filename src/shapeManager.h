@@ -27,6 +27,6 @@ public:
     // before calling, configure all uniforms other than `mat4 ModelToWorld`
     void Draw(unsigned int shader) const;
 
-    void LoadFromFile(const char* path);
-    void SaveToFile(const char* path);
+    bool LoadFromFile(const char* path);
+    bool SaveToFile(const char* path);
 };
