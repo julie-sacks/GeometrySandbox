@@ -44,6 +44,7 @@ private:
     // camera variables
     glm::vec3 cameraPos;
     glm::vec3 cameraRot;
+    float movementSpeed;
 
     ShapeManager manager;
 

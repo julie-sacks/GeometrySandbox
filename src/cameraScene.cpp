@@ -153,17 +153,17 @@ void CameraScene::HandleInputs(float dt)
                             glm::rotate(-cameraRot.y, vec3(1,0,0));
 
     if(inputs.GetDown(GLFW_KEY_W))
-        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,0,-1,0));
+        cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,0,-1,0));
     if(inputs.GetDown(GLFW_KEY_A))
-        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(-1,0,0,0));
+        cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(-1,0,0,0));
     if(inputs.GetDown(GLFW_KEY_S))
-        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,0,1,0));
+        cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,0,1,0));
     if(inputs.GetDown(GLFW_KEY_D))
-        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(1,0,0,0));
+        cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(1,0,0,0));
     if(inputs.GetDown(GLFW_KEY_SPACE))
-        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,1,0,0));
+        cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,1,0,0));
     if(inputs.GetDown(GLFW_KEY_LEFT_SHIFT))
-        cameraPos += 1*dt * vec3(cameraTrans*glm::vec4(0,-1,0,0));
+        cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,-1,0,0));
 
     if(inputs.GetDown(GLFW_KEY_UP))
         cameraRot.y += 1.0f*dt;
@@ -174,11 +174,16 @@ void CameraScene::HandleInputs(float dt)
     if(inputs.GetDown(GLFW_KEY_RIGHT))
         cameraRot.x += 1.0f*dt;
 
+    if(inputs.GetTriggered(GLFW_KEY_EQUAL))
+        movementSpeed += 0.25f;
+    if(inputs.GetTriggered(GLFW_KEY_MINUS))
+        movementSpeed -= 0.25f;
+
     if(inputs.GetMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
     {
         cameraRot += vec3(inputs.GetMouseDelta(), 0)*0.01f;
     }
-    if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_LEFT))
+    if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_MIDDLE) || inputs.GetTriggered(GLFW_KEY_ENTER))
     {
         manager.AddShape(new Point(cameraPos));
     }
@@ -281,6 +286,7 @@ void CameraScene::Init()
     printf("initializing camera scene\n");
     cameraPos = vec3(0,0,5);
     cameraRot = vec3(0,0,0);
+    movementSpeed = 2;
 }
 
 void CameraScene::PreRender(float dt)
