@@ -45,6 +45,8 @@ private:
     glm::vec3 cameraPos;
     glm::vec3 cameraRot;
     float movementSpeed;
+    float fov;
+    Ray ScreenToWorldRay(float x, float y) const;
 
     ShapeManager manager;
 

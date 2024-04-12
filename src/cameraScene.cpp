@@ -179,6 +179,12 @@ void CameraScene::HandleInputs(float dt)
     if(inputs.GetTriggered(GLFW_KEY_MINUS))
         movementSpeed -= 0.25f;
 
+    if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_LEFT))
+    {
+        manager.SelectRaycast(ScreenToWorldRay(inputs.currCursorX, inputs.currCursorY),
+            inputs.GetDown(GLFW_KEY_LEFT_SHIFT) || inputs.GetDown(GLFW_KEY_RIGHT_SHIFT));
+    }
+
     if(inputs.GetMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
     {
         cameraRot += vec3(inputs.GetMouseDelta(), 0)*0.01f;
@@ -191,6 +197,25 @@ void CameraScene::HandleInputs(float dt)
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+// TODO: for some reason the expected value is nearly exactly a factor of 1.1x away.
+Ray CameraScene::ScreenToWorldRay(float x, float y) const
+{
+    // take the center position, then use a screen plane at a known distance from the camera
+    // and add the offset on the screen plane to the cameraDir (scaled to unit distance)
+    float ducttapeadjustment = 1.1f;
+    x = (x/1280.0f) - 0.5f;
+    y = (y/ 720.0f) - 0.5f;
+    float vpheight = cosf(fov/2) * 2;
+    float vpwidth = vpheight * (16.0f/9.0f);
+    glm::vec4 offset(x * vpwidth, -y * vpheight, 0, 0);
+
+    glm::vec3 cameraDir = glm::rotate(-cameraRot.x, vec3(0,1,0)) *
+                          glm::rotate(-cameraRot.y, vec3(1,0,0)) *
+                          (glm::vec4(0,0,-1,0) + offset * ducttapeadjustment);
+
+    return Ray{cameraPos, glm::normalize(cameraDir)};
 }
 
 bool CameraScene::OpenFileDialog()
@@ -287,6 +312,7 @@ void CameraScene::Init()
     cameraPos = vec3(0,0,5);
     cameraRot = vec3(0,0,0);
     movementSpeed = 2;
+    fov = 80.0f*(M_PI/180.0f);
 }
 
 void CameraScene::PreRender(float dt)
