@@ -288,22 +288,6 @@ void CameraScene::Load()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    auto sphere = GenSphere(5);
-    idxcount = sphere.second.size()*3;
-
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sphere.first.size()*sizeof(vec3), sphere.first.data(), GL_STATIC_DRAW);
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.second.size()*sizeof(uvec3), sphere.second.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-
 }
 
 void CameraScene::Init()
@@ -345,8 +329,6 @@ void CameraScene::Render(float dt)
     vec3 lightDir = glm::normalize(vec3(1,2,3));
     glUniform3f(ulLightDir, lightDir.x, lightDir.y, lightDir.z);
 
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, nullptr);
     manager.Draw(shaderProgram);
     glBindVertexArray(0);
     glUseProgram(0);
