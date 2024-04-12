@@ -14,4 +14,5 @@ private:
 public:
     Point(glm::vec3 pos);
     glm::mat4 getModelToWorldMat() const override;
+    bool RayIntersects(const Ray& ray, float* t) const override;
 };

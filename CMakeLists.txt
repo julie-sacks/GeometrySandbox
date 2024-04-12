@@ -23,13 +23,14 @@ add_executable( ${TARGET_NAME}
         ./src/point.cpp
         ./src/genShapeModels.cpp
         ./src/pfd.cpp
-        
+        ./src/collisions.cpp
+
         ./imgui/imgui_single_file.cpp )
 
 if (UNIX)
     add_compile_options( -g )
 endif (UNIX)
-	
+
 if (WIN32)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
     #set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY )

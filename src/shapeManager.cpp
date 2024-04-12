@@ -7,6 +7,7 @@
 #include "json.hpp"
 #include <fstream>
 #include <iostream>
+#include <limits>
 
 using nlohmann::json;
 
@@ -134,6 +135,33 @@ void ShapeManager::Draw(unsigned int shader) const
         glDrawElements(GL_TRIANGLES, GetIdxCount(shape.second->visual), GL_UNSIGNED_INT, 0);
     }
     glBindVertexArray(0);
+}
+
+int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
+{
+    if(!multiselect) selectedIds.clear();
+
+    int closestId = -1;
+    float closestT = MAXFLOAT;
+    // only select the object closest to the camera
+    for(const auto& shape : shapeList)
+    {
+        float t;
+        if(!shape.second->RayIntersects(ray, &t)) continue;
+        if(t > closestT) continue;
+        closestId = shape.first;
+    }
+
+    if(closestId == -1) return closestId;
+
+    // ensure the shape doesn't get added twice
+    for(int id : selectedIds)
+    {
+        if(id == closestId) return closestId;
+    }
+
+    selectedIds.push_back(closestId);
+    return true;
 }
 
 // TODO: proper data validation

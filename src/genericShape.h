@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <glm/mat4x4.hpp>
+#include "collisions.h"
 
 enum class ShapeType
 {
@@ -39,7 +40,6 @@ class GenericShape
 {
 friend class ShapeManager;
 private:
-friend class ShapeManager;
     static int idcount;
     int getNextId();
     std::vector<int> parents;
@@ -58,4 +58,6 @@ public:
     void removeChild(int id);
 
     virtual glm::mat4 getModelToWorldMat() const = 0;
+
+    virtual bool RayIntersects(const Ray& ray, float* t) const = 0;
 };
