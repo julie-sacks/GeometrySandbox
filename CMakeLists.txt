@@ -19,6 +19,7 @@ add_executable( ${TARGET_NAME}
         ./src/testScene.cpp
         ./src/shader.cpp
         ./src/shapeManager.cpp
+        ./src/shapeSerialization.cpp
         ./src/cameraScene.cpp
         ./src/point.cpp
         ./src/genShapeModels.cpp
