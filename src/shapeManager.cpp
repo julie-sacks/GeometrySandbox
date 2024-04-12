@@ -126,9 +126,16 @@ void ShapeManager::Draw(unsigned int shader) const
 {
     GLint ulModelToWorld = glGetUniformLocation(shader, "modelToWorld");
     assert(ulModelToWorld != -1);
+    GLint ulBaseColor = glGetUniformLocation(shader, "baseColor");
+    assert(ulBaseColor != -1);
 
     for(auto& shape : shapeList)
     {
+        glm::vec3 color(1,1,1);
+        if(IsSelected(shape.first))
+            color = glm::vec3(1,1,0);
+        glUniform3fv(ulBaseColor, 1, &color[0]);
+
         glm::mat4 modelToWorld = shape.second->getModelToWorldMat();
         glUniformMatrix4fv(ulModelToWorld, 1, GL_FALSE, &modelToWorld[0][0]);
         glBindVertexArray(GetVao(shape.second->visual));
@@ -167,6 +174,15 @@ int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
 
     selectedIds.push_back(closestId);
     return true;
+}
+
+bool ShapeManager::IsSelected(int id) const
+{
+    for(int selectedId : selectedIds)
+    {
+        if(id == selectedId) return true;
+    }
+    return false;
 }
 
 // TODO: proper data validation

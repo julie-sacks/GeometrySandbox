@@ -26,11 +26,12 @@ public:
     GenericShape* GetShape(int id);
     const GenericShape* GetShape(int id) const;
     const ShapeSet& GetShapeList() const;
-    // before calling, configure all uniforms other than `mat4 ModelToWorld`
+    // before calling, configure all uniforms other than `mat4 ModelToWorld` and `baseColor`
     void Draw(unsigned int shader) const;
 
     // returns selected shape id (even if it was already selected), or -1
     int SelectRaycast(const Ray& ray, bool multiselect = false);
+    bool IsSelected(int id) const;
 
     bool LoadFromFile(const char* path);
     bool SaveToFile(const char* path);

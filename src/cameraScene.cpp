@@ -160,9 +160,9 @@ void CameraScene::HandleInputs(float dt)
         cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,0,1,0));
     if(inputs.GetDown(GLFW_KEY_D))
         cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(1,0,0,0));
-    if(inputs.GetDown(GLFW_KEY_SPACE))
+    if(inputs.GetDown(GLFW_KEY_E))
         cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,1,0,0));
-    if(inputs.GetDown(GLFW_KEY_LEFT_SHIFT))
+    if(inputs.GetDown(GLFW_KEY_Q))
         cameraPos += movementSpeed*dt * vec3(cameraTrans*glm::vec4(0,-1,0,0));
 
     if(inputs.GetDown(GLFW_KEY_UP))
