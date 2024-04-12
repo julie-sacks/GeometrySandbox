@@ -159,13 +159,9 @@ int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
         closestId = shape.first;
     }
 
-    if(closestId == -1) 
-    {
-        printf("did not select\n");
+    if(closestId == -1)
         return closestId;
-    }
-
-    printf("selected id: %d\n", closestId);
+        
     // ensure the shape doesn't get added twice
     for(int id : selectedIds)
     {
