@@ -32,6 +32,7 @@ public:
     // returns selected shape id (even if it was already selected), or -1
     int SelectRaycast(const Ray& ray, bool multiselect = false);
     bool IsSelected(int id) const;
+    int GetSelectedCount() const;
 
     bool LoadFromFile(const char* path);
     bool SaveToFile(const char* path);

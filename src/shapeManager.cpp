@@ -71,6 +71,7 @@ void ShapeManager::ClearShapes()
         delete shape.second;
     }
     shapeList.clear();
+    selectedIds.clear();
     GenericShape::idcount = 0;
 }
 
@@ -82,7 +83,7 @@ void ShapeManager::AddShape(GenericShape* shape)
 
 void ShapeManager::RemoveShape(int id)
 {
-    assert(shapeList.find(id) == shapeList.end());
+    assert(shapeList.find(id) != shapeList.end());
     GenericShape* shape = shapeList.at(id);
     assert(shape);
 
@@ -103,13 +104,13 @@ void ShapeManager::RemoveShape(int id)
 
 GenericShape* ShapeManager::GetShape(int id)
 {
-    assert(shapeList.find(id) == shapeList.end());
+    assert(shapeList.find(id) != shapeList.end());
     return shapeList.at(id);
 }
 
 const GenericShape* ShapeManager::GetShape(int id) const
 {
-    assert(shapeList.find(id) == shapeList.end());
+    assert(shapeList.find(id) != shapeList.end());
     return shapeList.at(id);
 }
 
@@ -165,7 +166,7 @@ int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
     }
 
     selectedIds.push_back(closestId);
-    return true;
+    return closestId;
 }
 
 bool ShapeManager::IsSelected(int id) const
@@ -177,3 +178,7 @@ bool ShapeManager::IsSelected(int id) const
     return false;
 }
 
+int ShapeManager::GetSelectedCount() const
+{
+    return selectedIds.size();
+}

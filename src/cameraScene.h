@@ -40,15 +40,18 @@ private:
     InputState inputs;
     void PollInputs();
     void HandleInputs(float dt);
+    void ClickAndDragMove(glm::vec2 dragStart, glm::vec2 dragEnd);
 
     // camera variables
     glm::vec3 cameraPos;
     glm::vec3 cameraRot;
     float movementSpeed;
     float fov;
+    glm::vec3 GetCameraDir() const;
     Ray ScreenToWorldRay(float x, float y) const;
 
     ShapeManager manager;
+    int lastSelected;
 
     // file io helpers
     std::string currentFilePath;
@@ -56,6 +59,7 @@ private:
     bool SaveFileToPath(const std::string& path);
     bool SaveFileDialog();
     bool SaveFileAuto();
+    void ClearShapes();
 
     // imgui
     void GuiRender();

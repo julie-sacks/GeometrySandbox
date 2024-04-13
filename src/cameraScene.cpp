@@ -136,6 +136,11 @@ void CameraScene::HandleInputs(float dt)
         if(inputs.GetTriggered(GLFW_KEY_R))
             shaderProgram = LoadShaders("./shader/standard.vert", "./shader/standard.frag");
 
+        if(inputs.GetTriggered(GLFW_KEY_N))
+        {
+            ClearShapes();
+        }
+
         if(inputs.GetTriggered(GLFW_KEY_O))
         {
             OpenFileDialog();
@@ -179,10 +184,26 @@ void CameraScene::HandleInputs(float dt)
     if(inputs.GetTriggered(GLFW_KEY_MINUS))
         movementSpeed -= 0.25f;
 
+    static glm::vec2 dragStart; // keeps track of the original mouse position
+    static bool preDrag; // only start dragging after a bit of mouse movement
     if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_LEFT))
     {
-        manager.SelectRaycast(ScreenToWorldRay(inputs.currCursorX, inputs.currCursorY),
-            inputs.GetDown(GLFW_KEY_LEFT_SHIFT) || inputs.GetDown(GLFW_KEY_RIGHT_SHIFT));
+        bool multiselect = inputs.GetDown(GLFW_KEY_LEFT_SHIFT) || inputs.GetDown(GLFW_KEY_RIGHT_SHIFT);
+        lastSelected = manager.SelectRaycast(ScreenToWorldRay(inputs.currCursorX, inputs.currCursorY), multiselect);
+        dragStart = glm::vec2(inputs.currCursorX, inputs.currCursorY);
+        preDrag = true;
+    }
+    if(inputs.GetMouseDown(GLFW_MOUSE_BUTTON_LEFT))
+    {
+        glm::vec2 dragEnd(inputs.currCursorX, inputs.currCursorY);
+        // only start moving if the cursor has moved a certain amount
+        glm::vec2 dragDelta = dragEnd - dragStart;
+        if(glm::dot(dragDelta, dragDelta) > 10) preDrag = false;
+        // don't run if the cursor hasn't moved this frame
+        if(inputs.GetMouseDelta() != glm::zero<glm::vec2>() && !preDrag)
+        {
+            ClickAndDragMove(dragStart, dragEnd);
+        }
     }
 
     if(inputs.GetMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
@@ -197,6 +218,31 @@ void CameraScene::HandleInputs(float dt)
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+void CameraScene::ClickAndDragMove(glm::vec2 dragStart, glm::vec2 dragEnd)
+{
+    // only drag exactly one object if it was selected with the most recent click
+    if(lastSelected == -1 || manager.GetSelectedCount() != 1) return;
+
+    // only drag points
+    GenericShape* shape = manager.GetShape(lastSelected);
+    if(manager.GetShape(lastSelected)->type != ShapeType::Point) return;
+
+    Point* point = dynamic_cast<Point*>(shape);
+    glm::vec3 cameraToShape = point->GetPos() - cameraPos;
+
+    Ray newDir = ScreenToWorldRay(dragEnd.x, dragEnd.y);
+    float distanceFromCam = glm::dot(GetCameraDir(), cameraToShape) / glm::dot(GetCameraDir(), newDir.direction);
+
+    point->SetPos(cameraPos + newDir.direction*distanceFromCam);
+}
+
+glm::vec3 CameraScene::GetCameraDir() const
+{
+    return  glm::rotate(-cameraRot.x, vec3(0,1,0)) *
+            glm::rotate(-cameraRot.y, vec3(1,0,0)) *
+            glm::vec4(0,0,-1,0);
 }
 
 // TODO: for some reason the expected value is nearly exactly a factor of 1.1x away.
@@ -255,6 +301,12 @@ bool CameraScene::SaveFileAuto()
     return SaveFileDialog();
 }
 
+void CameraScene::ClearShapes()
+{
+    manager.ClearShapes();
+    lastSelected = -1;
+}
+
 void CameraScene::GuiRender()
 {
     ImGui_ImplOpenGL3_NewFrame();
@@ -266,7 +318,7 @@ void CameraScene::GuiRender()
     {
         if(ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New", "Ctrl+N")) {manager.ClearShapes();}
+            if (ImGui::MenuItem("New", "Ctrl+N")) {ClearShapes();}
             if (ImGui::MenuItem("Open", "Ctrl+O")) {OpenFileDialog();}
             if (ImGui::MenuItem("Save", "Ctrl+S")) {SaveFileAuto();}
             if (ImGui::MenuItem("Save As...")) {SaveFileDialog();}

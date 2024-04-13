@@ -51,7 +51,7 @@ bool ShapeManager::LoadFromFile(const char *path)
             // read position
             assert(entry.find("position") != entry.end());
             auto position = entry.find("position").value();
-            dynamic_cast<Point*>(shape)->pos = glm::vec3(position[0],position[1],position[2]);
+            dynamic_cast<Point*>(shape)->position = glm::vec3(position[0],position[1],position[2]);
         }   break;
         
         default:
@@ -100,7 +100,7 @@ bool ShapeManager::SaveToFile(const char* path)
         case ShapeType::Point:
         {
             shapedata["type"] = "point";
-            glm::vec3& pos = dynamic_cast<Point*>(shape.second)->pos;
+            glm::vec3& pos = dynamic_cast<Point*>(shape.second)->position;
             shapedata["position"] = {pos.x, pos.y, pos.z};
         }   break;
         
