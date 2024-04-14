@@ -3,6 +3,7 @@
 #include "json.hpp"
 #include "shapeManager.h"
 #include "point.h"
+#include "segment.h"
 
 using nlohmann::json;
 
@@ -39,6 +40,8 @@ bool ShapeManager::LoadFromFile(const char *path)
         // TODO: expand this list as more shapes get implemented
         if(typestr.compare("point") == 0)
             type = ShapeType::Point;
+        if(typestr.compare("segment") == 0)
+            type = ShapeType::Segment;
 
         GenericShape* shape;
         // read type-specific params in switch statement
@@ -53,7 +56,12 @@ bool ShapeManager::LoadFromFile(const char *path)
             auto position = entry.find("position").value();
             dynamic_cast<Point*>(shape)->position = glm::vec3(position[0],position[1],position[2]);
         }   break;
-        
+
+        case ShapeType::Segment:
+        {
+            shape = new Segment(0,0);
+        }   break;
+
         default:
             break;
         }
@@ -102,6 +110,10 @@ bool ShapeManager::SaveToFile(const char* path)
             shapedata["type"] = "point";
             glm::vec3& pos = dynamic_cast<Point*>(shape.second)->position;
             shapedata["position"] = {pos.x, pos.y, pos.z};
+        }   break;
+        case ShapeType::Segment:
+        {
+            shapedata["type"] = "segment";
         }   break;
         
         default:
