@@ -22,6 +22,7 @@ add_executable( ${TARGET_NAME}
         ./src/shapeSerialization.cpp
         ./src/cameraScene.cpp
         ./src/point.cpp
+        ./src/segment.cpp
         ./src/genShapeModels.cpp
         ./src/pfd.cpp
         ./src/collisions.cpp

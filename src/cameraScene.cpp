@@ -13,6 +13,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "point.h"
+#include "segment.h"
 
 #define GLM_SWIZZLE
 #include <glm/vec3.hpp>
@@ -212,7 +213,12 @@ void CameraScene::HandleInputs(float dt)
     }
     if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_MIDDLE) || inputs.GetTriggered(GLFW_KEY_ENTER))
     {
-        manager.AddShape(new Point(cameraPos));
+        SpawnPoint();
+    }
+
+    if(inputs.GetTriggered(GLFW_KEY_1))
+    {
+        SpawnSegment();
     }
 
 
@@ -236,6 +242,22 @@ void CameraScene::ClickAndDragMove(glm::vec2 dragStart, glm::vec2 dragEnd)
     float distanceFromCam = glm::dot(GetCameraDir(), cameraToShape) / glm::dot(GetCameraDir(), newDir.direction);
 
     point->SetPos(cameraPos + newDir.direction*distanceFromCam);
+}
+
+void CameraScene::SpawnPoint()
+{
+    manager.AddShape(new Point(cameraPos + 5.0f*GetCameraDir()));
+}
+void CameraScene::SpawnSegment()
+{
+    const std::vector<int>& selectedList = manager.GetSelected();
+    if(manager.GetSelected().size() != 2) return;
+    for(int id : selectedList)
+    {
+        if(manager.GetShape(id)->type != ShapeType::Point) return;
+    }
+
+    manager.AddShape(new Segment(selectedList[0], selectedList[1]));
 }
 
 glm::vec3 CameraScene::GetCameraDir() const

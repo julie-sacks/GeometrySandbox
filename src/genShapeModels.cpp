@@ -70,3 +70,61 @@ std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps)
 
     return std::pair<std::vector<vec3>, std::vector<uvec3>>(pts, idx);
 }
+
+// almost identical to sphere, but one ring of tris always at full radius. (-1..1, 0..1, -1..1)
+std::pair<std::vector<glm::vec3>, std::vector<glm::uvec3>> GenCylinder(int steps)
+{
+    // vertices
+    std::vector<vec3> pts;
+    pts.push_back(vec3(0,0,0));
+
+    // two rings of verts
+    for(int i = 0; i < 2; ++i)
+    for(int j = 0; j < steps*2; ++j)
+    {
+        float horizangle = M_PI * ((float)j/steps);
+        // swap these if tris are inside out
+        float x = sinf(horizangle);
+        float z = cosf(horizangle);
+
+        pts.push_back(vec3(x,i,z));
+    }
+
+    pts.push_back(vec3(0,1,0));
+
+    // incides
+    std::vector<uvec3> idx;
+    // bottom disk (0,1,2,  0,2,3,  0,3,4...  0,10,1)
+    for(int i = 0; i < steps*2; ++i)
+    {
+        idx.push_back(uvec3(0,(i+1)%(steps*2)+1,i+1));
+    }
+    // rings (1,2,11,  2,12,11,  2,3,12,  3,13,12)
+    for(int j = 0; j < steps*2; ++j)
+    {
+        idx.push_back(uvec3( 0*(steps*2) +  j+1,
+                             0*(steps*2) + (j+1)%(steps*2)+1,
+                             1*(steps*2) +  j+1));
+        idx.push_back(uvec3( 0*(steps*2) + (j+1)%(steps*2)+1,
+                             1*(steps*2) + (j+1)%(steps*2)+1,
+                             1*(steps*2) +  j+1));
+    }
+    // top disk (11,1,2,  11,2,3...  11,10,1)
+    for(int i = 0; i < steps*2; ++i)
+    {
+        //(steps*steps*2)
+        int last   = 2*steps*2 + 1;
+        int middle = 1*steps*2;
+        idx.push_back(uvec3(last,middle+i+1,middle+(i+1)%(steps*2)+1));
+    }
+
+    // sanity check
+    for(int i = 0; i < idx.size(); ++i)
+    {
+        assert(idx[i].x < pts.size());
+        assert(idx[i].y < pts.size());
+        assert(idx[i].z < pts.size());
+    }
+
+    return std::pair<std::vector<vec3>, std::vector<uvec3>>(pts, idx);
+}

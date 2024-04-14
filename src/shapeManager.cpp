@@ -15,7 +15,11 @@ void ShapeManager::GenVao(ShapeVisual visual) const
     case ShapeVisual::Sphere:
         data = GenSphere();
         break;
-    
+
+    case ShapeVisual::Line:
+        data = GenCylinder();
+        break;
+
     default:
         // unimplemented behavior, please implement model generation
         assert(false);
@@ -79,6 +83,7 @@ void ShapeManager::AddShape(GenericShape* shape)
 {
     assert(shapeList.find(shape->id) == shapeList.end());
     shapeList.insert({shape->id, shape});
+    shape->manager = this;
 }
 
 void ShapeManager::RemoveShape(int id)
@@ -176,6 +181,11 @@ bool ShapeManager::IsSelected(int id) const
         if(id == selectedId) return true;
     }
     return false;
+}
+
+const std::vector<int>& ShapeManager::GetSelected() const
+{
+    return selectedIds;
 }
 
 int ShapeManager::GetSelectedCount() const

@@ -42,6 +42,9 @@ private:
     void HandleInputs(float dt);
     void ClickAndDragMove(glm::vec2 dragStart, glm::vec2 dragEnd);
 
+    void SpawnPoint();
+    void SpawnSegment();
+
     // camera variables
     glm::vec3 cameraPos;
     glm::vec3 cameraRot;

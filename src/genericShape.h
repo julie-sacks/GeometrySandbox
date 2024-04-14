@@ -35,6 +35,7 @@ public:
 };
 
 typedef std::map<int, GenericShape*> ShapeSet;
+class ShapeManager;
 
 class GenericShape
 {
@@ -42,8 +43,10 @@ friend class ShapeManager;
 private:
     static int idcount;
     int getNextId();
+protected:
     std::vector<int> parents;
     std::vector<int> children;
+    ShapeManager* manager;
 public:
     const int id;
     const ShapeType type;
