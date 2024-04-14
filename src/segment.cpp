@@ -32,3 +32,12 @@ bool Segment::RayIntersects(const Ray& ray, float* t) const
     glm::vec3 p2 = dynamic_cast<Point*>(manager->GetShape(parents[1]))->GetPos();
     return Intersects(ray, CylinderCollider{p1, p2, 0.5f}, t);
 }
+
+glm::vec3 Segment::GetP1Pos() const
+{
+    return dynamic_cast<Point*>(manager->GetShape(parents[0]))->GetPos();
+}
+glm::vec3 Segment::GetP2Pos() const
+{
+    return dynamic_cast<Point*>(manager->GetShape(parents[1]))->GetPos();
+}

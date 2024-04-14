@@ -23,6 +23,7 @@ add_executable( ${TARGET_NAME}
         ./src/cameraScene.cpp
         ./src/point.cpp
         ./src/segment.cpp
+        ./src/midpoint.cpp
         ./src/genShapeModels.cpp
         ./src/pfd.cpp
         ./src/collisions.cpp

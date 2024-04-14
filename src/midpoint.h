@@ -5,15 +5,17 @@
 
 // all shapes will be based on points.
 
-class Segment : public GenericShape
+class Midpoint : public GenericShape
 {
 friend class ShapeManager;
 private:
+    float t;
 
 public:
-    Segment(int parent1, int parent2);
+    Midpoint(int parent, float t);
+    void SetT(float newt);
+    float GetT() const;
+    glm::vec3 GetPos() const;
     glm::mat4 getModelToWorldMat() const override;
     bool RayIntersects(const Ray& ray, float* t) const override;
-    glm::vec3 GetP1Pos() const;
-    glm::vec3 GetP2Pos() const;
 };

@@ -14,6 +14,7 @@
 
 #include "point.h"
 #include "segment.h"
+#include "midpoint.h"
 
 #define GLM_SWIZZLE
 #include <glm/vec3.hpp>
@@ -221,6 +222,11 @@ void CameraScene::HandleInputs(float dt)
         SpawnSegment();
     }
 
+    if(inputs.GetTriggered(GLFW_KEY_2))
+    {
+        SpawnMidpoint();
+    }
+
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -251,13 +257,21 @@ void CameraScene::SpawnPoint()
 void CameraScene::SpawnSegment()
 {
     const std::vector<int>& selectedList = manager.GetSelected();
-    if(manager.GetSelected().size() != 2) return;
+    if(selectedList.size() != 2) return;
     for(int id : selectedList)
     {
         if(manager.GetShape(id)->type != ShapeType::Point) return;
     }
 
     manager.AddShape(new Segment(selectedList[0], selectedList[1]));
+}
+
+void CameraScene::SpawnMidpoint()
+{
+    const std::vector<int>& selectedList = manager.GetSelected();
+    if(selectedList.size() != 1) return;
+    if(manager.GetShape(selectedList[0])->type != ShapeType::Segment) return;
+    manager.AddShape(new Midpoint(selectedList[0], 0.5f));
 }
 
 glm::vec3 CameraScene::GetCameraDir() const

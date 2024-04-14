@@ -13,6 +13,7 @@ enum class ShapeType
     Segment,
     Circle,
     Sphere,
+    Midpoint,
 
     Count
 };
