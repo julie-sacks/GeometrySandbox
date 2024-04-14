@@ -159,6 +159,7 @@ int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
         if(!shape.second->RayIntersects(ray, &t)) continue;
         if(t > closestT) continue;
         closestId = shape.first;
+        closestT = t;
     }
 
     if(closestId == -1)

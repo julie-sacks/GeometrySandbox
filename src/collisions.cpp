@@ -50,3 +50,49 @@ bool Intersects(const Ray& ray, const SphereCollider& sphere, float* rt)
 
     return true;
 }
+
+bool Intersects(const Ray& ray, const CylinderCollider& cylinder, float *rt)
+{
+    // find the slice of the (assumed infinite) cylinder perpendicular to the ray origin (contains circle)
+    glm::vec3 raydirnorm = normalize(ray.direction);
+    glm::vec3 p1top2 = cylinder.p2-cylinder.p1;
+    glm::vec3 segdir = normalize(p1top2);
+    glm::vec3 perpraydir = ray.direction - segdir*glm::dot(segdir, raydirnorm);
+
+    glm::vec3 raytop1 = cylinder.p1 - ray.origin;
+    glm::vec3 raytop1norm = normalize(raytop1);
+    glm::vec3 circlecenter = cylinder.p1 + segdir*glm::dot(-raytop1, segdir);
+
+    // important values at this point: circlecenter, perpraydir, ray.origin, cylinder.radius
+    // find intersection between the perpendicular ray and the circle (intersection on an infinite cylinder)
+    glm::vec3 perpraynorm = normalize(perpraydir);
+    glm::vec3 raytocenter = circlecenter - ray.origin;
+    glm::vec3 raytocenternorm = normalize(raytocenter);
+    float t = dot(raytocenter, perpraynorm);
+    glm::vec3 closestpoint = ray.origin + perpraynorm*t;
+    float distsquared = dot(closestpoint - circlecenter, closestpoint - circlecenter);
+    if(distsquared > cylinder.radius * cylinder.radius) return false;
+    //assert(false); // don't go past here yet
+    float deltat = sqrt(cylinder.radius*cylinder.radius - distsquared);
+
+    // intersection t values
+    float t1 = (t-deltat) / dot(ray.direction, perpraynorm);
+    float t2 = (t+deltat) / dot(ray.direction, perpraynorm);
+
+    // t1 should be the closest intersection.
+    // if it's negative then replace it with the second intersection
+    if(t1 < 0) t1 = t2;
+
+    // then find point of intersection in 3d
+    // check if it falls within the cylinder's bounds on the parallel axis
+    // might run into problems here with the normalized direction vectors
+    glm::vec3 intersection = ray.origin + t1*ray.direction;
+    glm::vec3 p1tointersection = intersection - cylinder.p1;
+    // 0..1
+    float p1toidist = dot(p1tointersection, p1top2)/dot(p1top2, p1top2);
+    if(p1toidist < 0 || p1toidist > 1) return false;
+
+    if(rt != nullptr) *rt = t1;
+
+    return true;
+}

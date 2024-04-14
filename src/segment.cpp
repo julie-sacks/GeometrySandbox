@@ -28,5 +28,7 @@ glm::mat4 Segment::getModelToWorldMat() const
 
 bool Segment::RayIntersects(const Ray& ray, float* t) const
 {
-    return false;
+    glm::vec3 p1 = dynamic_cast<Point*>(manager->GetShape(parents[0]))->GetPos();
+    glm::vec3 p2 = dynamic_cast<Point*>(manager->GetShape(parents[1]))->GetPos();
+    return Intersects(ray, CylinderCollider{p1, p2, 0.5f}, t);
 }
