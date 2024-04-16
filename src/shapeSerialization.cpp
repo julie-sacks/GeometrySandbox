@@ -4,6 +4,7 @@
 #include "shapeManager.h"
 #include "point.h"
 #include "segment.h"
+#include "midpoint.h"
 
 using nlohmann::json;
 
@@ -31,10 +32,12 @@ bool ShapeManager::LoadFromFile(const char *path)
     {
         // read id from file
         assert(entry.find("id") != entry.end());
+        assert(entry.at("id").is_number_integer());
         GenericShape::idcount = entry.at("id"); // this is a way to set the id of the next genned shape
 
         // read what type to generate
         assert(entry.find("type") != entry.end());
+        assert(entry.at("type").is_string());
         std::string typestr = entry.at("type");
         ShapeType type = ShapeType::None;
         // TODO: expand this list as more shapes get implemented
@@ -42,6 +45,10 @@ bool ShapeManager::LoadFromFile(const char *path)
             type = ShapeType::Point;
         if(typestr.compare("segment") == 0)
             type = ShapeType::Segment;
+        if(typestr.compare("midpoint") == 0)
+            type = ShapeType::Segment;
+
+        assert(type != ShapeType::None);
 
         GenericShape* shape;
         // read type-specific params in switch statement
@@ -62,9 +69,21 @@ bool ShapeManager::LoadFromFile(const char *path)
             shape = new Segment(0,0);
         }   break;
 
+        case ShapeType::Midpoint:
+        {
+            shape = new Midpoint(0,0);
+
+            // read position
+            assert(entry.find("position") != entry.end());
+            assert(entry.at("position").is_number());
+            float position = entry.at("position");
+            dynamic_cast<Point*>(shape)->position = glm::vec3(position);
+        }   break;
+
         default:
             break;
         }
+
         // read parents
         assert(entry.find("parents") != entry.end());
         shape->parents = {entry.at("parents").begin(), entry.at("parents").end()};
@@ -111,11 +130,18 @@ bool ShapeManager::SaveToFile(const char* path)
             glm::vec3& pos = dynamic_cast<Point*>(shape.second)->position;
             shapedata["position"] = {pos.x, pos.y, pos.z};
         }   break;
+
         case ShapeType::Segment:
         {
             shapedata["type"] = "segment";
         }   break;
-        
+
+        case ShapeType::Midpoint:
+        {
+            shapedata["type"] = "midpoint";
+            shapedata["position"] = dynamic_cast<Midpoint*>(shape.second)->t;
+        }   break;
+
         default:
             break;
         }
