@@ -109,23 +109,29 @@ void CameraScene::PollInputs()
     inputs.prevCursorX = inputs.currCursorX;
     inputs.prevCursorY = inputs.currCursorY;
 
-    // go through each key code (including invalid ones for simplicity)
-    for(int i = 0; i <= GLFW_KEY_LAST; ++i)
+    inputs.currKeys = false;
+    if(!ImGui::GetIO().WantCaptureKeyboard)
     {
-        bool state = glfwGetKey(window, i);
-        if(state == GLFW_INVALID_ENUM) continue;
-        inputs.currKeys[i] = (state == GLFW_PRESS);
+        // go through each key code (including invalid ones for simplicity)
+        for(int i = 0; i <= GLFW_KEY_LAST; ++i)
+        {
+            bool state = glfwGetKey(window, i);
+            if(state == GLFW_INVALID_ENUM) continue;
+            inputs.currKeys[i] = (state == GLFW_PRESS);
+        }
     }
 
     glfwGetCursorPos(window, &inputs.currCursorX, &inputs.currCursorY);
 
     inputs.currMouseBtn = false;
-    if(ImGui::GetIO().WantCaptureMouse) return;
-    for(int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
+    if(!ImGui::GetIO().WantCaptureMouse)
     {
-        bool state = glfwGetMouseButton(window, i);
-        if(state == GLFW_INVALID_ENUM) continue;
-        inputs.currMouseBtn[i] = (state == GLFW_PRESS);
+        for(int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
+        {
+            bool state = glfwGetMouseButton(window, i);
+            if(state == GLFW_INVALID_ENUM) continue;
+            inputs.currMouseBtn[i] = (state == GLFW_PRESS);
+        }
     }
 }
 
@@ -348,7 +354,10 @@ void CameraScene::GuiRender()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    //ImGui::ShowDemoWindow();
+    static bool isDemoVisible = false;
+    if(inputs.GetTriggered(GLFW_KEY_F1)) isDemoVisible = !isDemoVisible;
+    if(isDemoVisible) ImGui::ShowDemoWindow();
+
     if(ImGui::BeginMainMenuBar())
     {
         if(ImGui::BeginMenu("File"))
@@ -363,12 +372,51 @@ void CameraScene::GuiRender()
     }
 
     if(ImGui::Begin("Tools", nullptr,
-        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus))
     {
         if(ImGui::Button("Point   ")) SpawnPoint();
         if(ImGui::Button("Segment ")) SpawnSegment();
         if(ImGui::Button("Midpoint")) SpawnMidpoint();
     } ImGui::End();
+
+    char title[64] = "No selection###";
+    GenericShape* shape = nullptr;
+    if(lastSelected != -1)
+    {
+        shape = manager.GetShape(lastSelected);
+        sprintf(title, "%s %d###", GetShapeTypeString(shape->type), lastSelected);
+    }
+
+    ImGui::PushID("SelectionBox");
+    if(ImGui::Begin(title, nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus)
+        && shape)
+    {
+        switch (shape->type)
+        {
+        case ShapeType::Point:
+        {
+            Point* point = dynamic_cast<Point*>(shape);
+            glm::vec3 pos = point->GetPos();
+            ImGui::InputFloat3("Pos: ", &pos[0]);
+            point->SetPos(pos);
+        }   break;
+
+        case ShapeType::Segment:
+            break;
+
+        case ShapeType::Midpoint:
+        {
+            Midpoint* midpoint = dynamic_cast<Midpoint*>(shape);
+            float t = midpoint->GetT();
+            ImGui::InputFloat("Pos: ", &t);
+            midpoint->SetT(t);
+        }   break;
+
+        default:
+            break;
+        }
+    } ImGui::End();
+    ImGui::PopID();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -392,6 +440,7 @@ void CameraScene::Init()
     cameraRot = vec3(0,0,0);
     movementSpeed = 2;
     fov = 80.0f*(M_PI/180.0f);
+    lastSelected = -1;
 }
 
 void CameraScene::PreRender(float dt)

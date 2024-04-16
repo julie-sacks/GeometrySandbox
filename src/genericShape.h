@@ -17,6 +17,8 @@ enum class ShapeType
 
     Count
 };
+const char* GetShapeTypeString(ShapeType type);
+
 enum class ShapeVisual
 {
     None = -1,

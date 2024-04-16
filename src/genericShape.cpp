@@ -56,3 +56,19 @@ bool ShapeIdLess::operator()(const GenericShape *lhs, const GenericShape *rhs) c
 {
     return lhs->id < rhs->id;
 }
+
+const char* GetShapeTypeString(ShapeType type)
+{
+    switch (type)
+    {
+    case ShapeType::Point:
+        return "Point";
+    case ShapeType::Segment:
+        return "Segment";
+    case ShapeType::Midpoint:
+        return "Midpoint";
+
+    default:
+        return "Shape";
+    }
+}
