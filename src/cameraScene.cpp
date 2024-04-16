@@ -117,17 +117,16 @@ void CameraScene::PollInputs()
         inputs.currKeys[i] = (state == GLFW_PRESS);
     }
 
+    glfwGetCursorPos(window, &inputs.currCursorX, &inputs.currCursorY);
+
+    inputs.currMouseBtn = false;
+    if(ImGui::GetIO().WantCaptureMouse) return;
     for(int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i)
     {
         bool state = glfwGetMouseButton(window, i);
         if(state == GLFW_INVALID_ENUM) continue;
         inputs.currMouseBtn[i] = (state == GLFW_PRESS);
-        if(state == GLFW_PRESS)
-        {
-            //printf("pressed btn %d\n", i);
-        }
     }
-    glfwGetCursorPos(window, &inputs.currCursorX, &inputs.currCursorY);
 }
 
 void CameraScene::HandleInputs(float dt)
@@ -362,6 +361,14 @@ void CameraScene::GuiRender()
         }
         ImGui::EndMainMenuBar();
     }
+
+    if(ImGui::Begin("Tools", nullptr,
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
+    {
+        if(ImGui::Button("Point   ")) SpawnPoint();
+        if(ImGui::Button("Segment ")) SpawnSegment();
+        if(ImGui::Button("Midpoint")) SpawnMidpoint();
+    } ImGui::End();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
