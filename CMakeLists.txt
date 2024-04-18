@@ -15,6 +15,7 @@ set( TARGET_NAME geom )
 add_executable( ${TARGET_NAME}
         ./src/main.cpp
         ./src/genericShape.cpp
+        ./src/genericPoint.cpp
         ./src/scene.cpp
         ./src/testScene.cpp
         ./src/shader.cpp

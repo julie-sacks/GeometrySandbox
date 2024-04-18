@@ -217,10 +217,6 @@ void CameraScene::HandleInputs(float dt)
     {
         cameraRot += vec3(inputs.GetMouseDelta(), 0)*0.01f;
     }
-    if(inputs.GetMouseTriggered(GLFW_MOUSE_BUTTON_MIDDLE) || inputs.GetTriggered(GLFW_KEY_ENTER))
-    {
-        SpawnPoint();
-    }
 
     if(inputs.GetTriggered(GLFW_KEY_1))
         SpawnPoint();
@@ -270,7 +266,7 @@ void CameraScene::SpawnSegment()
     if(selectedList.size() != 2) return;
     for(int id : selectedList)
     {
-        if(manager.GetShape(id)->type != ShapeType::Point) return;
+        if(!manager.GetShape(id)->IsPointLike()) return;
     }
 
     manager.AddShape(new Segment(selectedList[0], selectedList[1]));

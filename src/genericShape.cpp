@@ -26,6 +26,32 @@ GenericShape::~GenericShape()
     // }
 }
 
+bool GenericShape::IsPointLike() const
+{
+    switch (type)
+    {
+    case ShapeType::Point:
+        return true;
+    case ShapeType::Midpoint:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool GenericShape::IsLineLike() const
+{
+    switch (type)
+    {
+    case ShapeType::Segment:
+        return true;
+    case ShapeType::Line:
+        return true;
+    default:
+        return false;
+    }
+}
+
 const std::vector<int> &GenericShape::getChildren() const
 {
     return children;

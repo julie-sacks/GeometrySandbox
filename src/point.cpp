@@ -1,7 +1,7 @@
 #include "point.h"
 #include <glm/gtx/transform.hpp>
 
-Point::Point(glm::vec3 pos) : GenericShape(ShapeType::Point, ShapeVisual::Sphere), position(pos)
+Point::Point(glm::vec3 pos) : GenericPoint(ShapeType::Point), position(pos)
 {
 }
 

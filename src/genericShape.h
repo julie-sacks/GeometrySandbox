@@ -50,12 +50,17 @@ protected:
     std::vector<int> parents;
     std::vector<int> children;
     ShapeManager* manager;
+
+    GenericShape(ShapeType type, ShapeVisual visual);
 public:
+    ~GenericShape();
+
     const int id;
     const ShapeType type;
     const ShapeVisual visual;
-    GenericShape(ShapeType type, ShapeVisual visual);
-    ~GenericShape();
+
+    bool IsPointLike() const;
+    bool IsLineLike() const;
 
     const std::vector<int>& getChildren() const;
     const std::vector<int>& getParents() const;

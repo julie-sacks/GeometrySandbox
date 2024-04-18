@@ -3,7 +3,7 @@
 #include "segment.h"
 #include <glm/gtx/transform.hpp>
 
-Midpoint::Midpoint(int parent, float t) : GenericShape(ShapeType::Midpoint, ShapeVisual::Sphere), t(t)
+Midpoint::Midpoint(int parent, float t) : GenericPoint(ShapeType::Midpoint), t(t)
 {
     parents.push_back(parent);
 }
