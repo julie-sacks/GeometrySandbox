@@ -46,7 +46,7 @@ bool ShapeManager::LoadFromFile(const char *path)
         if(typestr.compare("segment") == 0)
             type = ShapeType::Segment;
         if(typestr.compare("midpoint") == 0)
-            type = ShapeType::Segment;
+            type = ShapeType::Midpoint;
 
         assert(type != ShapeType::None);
 
@@ -77,7 +77,7 @@ bool ShapeManager::LoadFromFile(const char *path)
             assert(entry.find("position") != entry.end());
             assert(entry.at("position").is_number());
             float position = entry.at("position");
-            dynamic_cast<Point*>(shape)->position = glm::vec3(position);
+            dynamic_cast<Midpoint*>(shape)->t = position;
         }   break;
 
         default:
