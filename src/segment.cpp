@@ -3,7 +3,7 @@
 #include "shapeManager.h"
 #include "genericPoint.h"
 
-Segment::Segment(int parent1, int parent2) : GenericShape(ShapeType::Segment, ShapeVisual::Line)
+Segment::Segment(int parent1, int parent2) : GenericLine(ShapeType::Segment)
 {
     parents.push_back(parent1);
     parents.push_back(parent2);
