@@ -229,6 +229,14 @@ void CameraScene::HandleInputs(float dt)
     if(inputs.GetTriggered(GLFW_KEY_3))
         SpawnMidpoint();
 
+    if(inputs.GetTriggered(GLFW_KEY_DELETE))
+    {
+        for(int id : manager.GetSelected())
+        {
+            manager.RemoveShape(id);
+        }
+        lastSelected = -1;
+    }
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);

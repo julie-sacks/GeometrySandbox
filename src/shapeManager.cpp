@@ -100,14 +100,17 @@ void ShapeManager::RemoveShape(int id)
 
     shapeList.erase(id);
 
-    for(auto& parent : shape->getParents())
+    for(auto& parentid : shape->getParents())
     {
-        GetShape(parent)->removeChild(id);
+        GenericShape* parent = GetShape(parentid);
+        if(parent == nullptr) continue;
+        GetShape(parentid)->removeChild(id);
     }
     // a little memory inefficient, but it should work
     std::vector<int> templist = shape->getChildren();
     for(auto& child : templist)
     {
+        if(GetShape(child) == nullptr) continue;
         RemoveShape(child);
     }
     delete shape;
@@ -115,7 +118,7 @@ void ShapeManager::RemoveShape(int id)
 
 GenericShape* ShapeManager::GetShape(int id)
 {
-    assert(shapeList.find(id) != shapeList.end());
+    if(shapeList.find(id) == shapeList.end()) return nullptr;
     return shapeList.at(id);
 }
 
