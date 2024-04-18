@@ -87,9 +87,6 @@ bool ShapeManager::LoadFromFile(const char *path)
         // read parents
         assert(entry.find("parents") != entry.end());
         shape->parents = {entry.at("parents").begin(), entry.at("parents").end()};
-        // read children
-        assert(entry.find("children") != entry.end());
-        shape->children = {entry.at("children").begin(), entry.at("children").end()};
 
         AddShape(shape);
         // update maxid
@@ -119,7 +116,6 @@ bool ShapeManager::SaveToFile(const char* path)
         shapedata["id"] = shape.second->id;
         // store parents and children
         shapedata["parents"] = shape.second->parents;
-        shapedata["children"] = shape.second->children;
 
         // store type and type-related members
         switch (shape.second->type)

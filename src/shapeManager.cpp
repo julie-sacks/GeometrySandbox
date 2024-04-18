@@ -82,6 +82,12 @@ void ShapeManager::ClearShapes()
 void ShapeManager::AddShape(GenericShape* shape)
 {
     assert(shapeList.find(shape->id) == shapeList.end());
+
+    for(int parentid : shape->parents)
+    {
+        GetShape(parentid)->addChild(shape->id);
+    }
+
     shapeList.insert({shape->id, shape});
     shape->manager = this;
 }

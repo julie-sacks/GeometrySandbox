@@ -223,14 +223,11 @@ void CameraScene::HandleInputs(float dt)
     }
 
     if(inputs.GetTriggered(GLFW_KEY_1))
-    {
-        SpawnSegment();
-    }
-
+        SpawnPoint();
     if(inputs.GetTriggered(GLFW_KEY_2))
-    {
+        SpawnSegment();
+    if(inputs.GetTriggered(GLFW_KEY_3))
         SpawnMidpoint();
-    }
 
 
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
