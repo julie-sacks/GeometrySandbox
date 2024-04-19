@@ -41,6 +41,8 @@ private:
     void PollInputs();
     void HandleInputs(float dt);
     void ClickAndDragMove(glm::vec2 dragStart, glm::vec2 dragEnd);
+    void ClickAndDragPoint(glm::vec2 dragStart, glm::vec2 dragEnd);
+    void ClickAndDragMidpoint(glm::vec2 dragStart, glm::vec2 dragEnd);
 
     void SpawnPoint();
     void SpawnSegment();

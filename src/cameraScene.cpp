@@ -243,17 +243,43 @@ void CameraScene::ClickAndDragMove(glm::vec2 dragStart, glm::vec2 dragEnd)
     // only drag exactly one object if it was selected with the most recent click
     if(lastSelected == -1 || manager.GetSelectedCount() != 1) return;
 
-    // only drag points
+    // only drag points and midpoints
     GenericShape* shape = manager.GetShape(lastSelected);
-    if(manager.GetShape(lastSelected)->type != ShapeType::Point) return;
+    if(manager.GetShape(lastSelected)->type == ShapeType::Point)
+        ClickAndDragPoint(dragStart, dragEnd);
+    if(manager.GetShape(lastSelected)->type == ShapeType::Midpoint)
+        ClickAndDragMidpoint(dragStart, dragEnd);
+}
 
-    Point* point = dynamic_cast<Point*>(shape);
+void CameraScene::ClickAndDragPoint(glm::vec2 dragStart, glm::vec2 dragEnd)
+{
+    Point* point = dynamic_cast<Point*>(manager.GetShape(lastSelected));
     glm::vec3 cameraToShape = point->GetPos() - cameraPos;
 
     Ray newDir = ScreenToWorldRay(dragEnd.x, dragEnd.y);
     float distanceFromCam = glm::dot(GetCameraDir(), cameraToShape) / glm::dot(GetCameraDir(), newDir.direction);
 
     point->SetPos(cameraPos + newDir.direction*distanceFromCam);
+}
+
+void CameraScene::ClickAndDragMidpoint(glm::vec2 dragStart, glm::vec2 dragEnd)
+{
+    Midpoint* midpoint = dynamic_cast<Midpoint*>(manager.GetShape(lastSelected));
+    Ray clickray = ScreenToWorldRay(dragEnd.x, dragEnd.y);
+    GenericLine* line = dynamic_cast<GenericLine*>(manager.GetShape(midpoint->getParents()[0]));
+
+    glm::vec3 segdir = glm::normalize(line->GetP2Pos() - line->GetP1Pos());
+    // t from p1 to camera position
+    float lowert = glm::dot(segdir, cameraPos - line->GetP1Pos());
+    glm::vec3 camnearestpos = line->GetP1Pos() + segdir*lowert;
+    glm::vec3 camtosegdir = glm::normalize(camnearestpos - cameraPos);
+    float disttoseg = glm::distance(cameraPos, camnearestpos);
+    float camtosegt = disttoseg / dot(camtosegdir, clickray.direction);
+    // t from camera position to cursor position
+    float uppert = glm::dot(segdir, clickray.direction * camtosegt);
+
+    midpoint->SetT((lowert+uppert)/glm::distance(line->GetP1Pos(), line->GetP2Pos()));
+
 }
 
 void CameraScene::SpawnPoint()
