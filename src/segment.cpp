@@ -41,3 +41,8 @@ glm::vec3 Segment::GetP2Pos() const
 {
     return dynamic_cast<GenericPoint*>(manager->GetShape(parents[1]))->GetPos();
 }
+
+float Segment::ClampToBounds(float param) const
+{
+    return glm::max(0.0f, glm::min(1.0f, param));
+}

@@ -16,4 +16,5 @@ public:
     bool RayIntersects(const Ray& ray, float* t) const override;
     glm::vec3 GetP1Pos() const override;
     glm::vec3 GetP2Pos() const override;
+    float ClampToBounds(float param) const override;
 };

@@ -10,7 +10,7 @@ Midpoint::Midpoint(int parent, float t) : GenericPoint(ShapeType::Midpoint), t(t
 
 void Midpoint::SetT(float newt)
 {
-    t = newt;
+    t = dynamic_cast<GenericLine*>(manager->GetShape(parents[0]))->ClampToBounds(newt);
 }
 
 float Midpoint::GetT() const
