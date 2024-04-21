@@ -44,5 +44,5 @@ glm::mat4 Midpoint::getModelToWorldMat() const
 
 bool Midpoint::RayIntersects(const Ray& ray, float* t) const
 {
-    return Intersects(ray, SphereCollider{GetPos(), 1});
+    return Intersects(ray, SphereCollider{GetPos(), 1}, t);
 }
