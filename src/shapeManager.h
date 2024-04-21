@@ -31,6 +31,8 @@ public:
 
     // returns selected shape id (even if it was already selected), or -1
     int SelectRaycast(const Ray& ray, bool multiselect = false);
+    int Select(int newid);
+    bool Deselect(int id);
     bool IsSelected(int id) const;
     const std::vector<int>& GetSelected() const;
     int GetSelectedCount() const;

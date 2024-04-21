@@ -445,6 +445,33 @@ void CameraScene::GuiRender()
     } ImGui::End();
     ImGui::PopID();
 
+    if(ImGui::Begin("Shapes", nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus))
+    {
+        for (auto& shape : manager.GetShapeList())
+        {
+            char shapeLabel[64] = {0};
+            sprintf(shapeLabel, "%d: %s", shape.first, GetShapeTypeString(shape.second->type));
+            if(ImGui::Selectable(shapeLabel, manager.IsSelected(shape.first)))
+            {
+                if(!manager.IsSelected(shape.first))
+                {
+                    lastSelected = manager.Select(shape.first);
+                }
+                else
+                {
+                    manager.Deselect(shape.first);
+                    if(shape.first == lastSelected)
+                    {
+                        const auto& selected = manager.GetSelected();
+                        if(selected.size() > 0) lastSelected = selected[0];
+                        else                    lastSelected = -1;
+                    }
+                }
+            }
+        }
+        
+    } ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -465,7 +492,7 @@ void CameraScene::Init()
     printf("initializing camera scene\n");
     cameraPos = vec3(0,0,5);
     cameraRot = vec3(0,0,0);
-    movementSpeed = 2;
+    movementSpeed = 5;
     fov = 80.0f*(M_PI/180.0f);
     lastSelected = -1;
 }

@@ -174,14 +174,31 @@ int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
     if(closestId == -1)
         return closestId;
 
+    return Select(closestId);
+}
+
+int ShapeManager::Select(int newid)
+{
     // ensure the shape doesn't get added twice
     for(int id : selectedIds)
     {
-        if(id == closestId) return closestId;
+        if(newid == id) return newid;
     }
 
-    selectedIds.push_back(closestId);
-    return closestId;
+    selectedIds.push_back(newid);
+    return newid;
+}
+
+bool ShapeManager::Deselect(int id)
+{
+    for(auto it = selectedIds.begin(); it != selectedIds.end(); ++it)
+    {
+        if(id != *it) continue;
+        selectedIds.erase(it);
+        return true;
+    }
+    // id isn't selected currently
+    return false;
 }
 
 bool ShapeManager::IsSelected(int id) const
