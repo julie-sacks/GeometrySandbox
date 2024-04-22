@@ -7,6 +7,6 @@ uniform vec3 baseColor;
 
 void main()
 {
-    float brightness = mix(0.3f, 1.0f, pow(max(0,dot(lightDir, normal)), 2));
+    float brightness = mix(0.3f, 1.0f, pow(max(0,dot(lightDir, normalize(normal))), 2));
     fragColor = vec4(baseColor*brightness, 1);
 }

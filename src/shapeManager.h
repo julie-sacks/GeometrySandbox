@@ -26,7 +26,8 @@ public:
     GenericShape* GetShape(int id);
     const GenericShape* GetShape(int id) const;
     const ShapeSet& GetShapeList() const;
-    // before calling, configure all uniforms other than `mat4 ModelToWorld` and `baseColor`
+    // before calling, configure all uniforms other than:
+    // `mat4 modelToWorld`, `mat4 normalTransform and `baseColor`
     void Draw(unsigned int shader) const;
 
     // returns selected shape id (even if it was already selected), or -1

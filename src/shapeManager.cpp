@@ -39,8 +39,10 @@ void ShapeManager::GenVao(ShapeVisual visual) const
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.second.size()*sizeof(glm::uvec3), data.second.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 
@@ -137,6 +139,8 @@ void ShapeManager::Draw(unsigned int shader) const
 {
     GLint ulModelToWorld = glGetUniformLocation(shader, "modelToWorld");
     assert(ulModelToWorld != -1);
+    GLint ulNormalTransform = glGetUniformLocation(shader, "normalTransform");
+    assert(ulNormalTransform != -1);
     GLint ulBaseColor = glGetUniformLocation(shader, "baseColor");
     assert(ulBaseColor != -1);
 
@@ -149,6 +153,8 @@ void ShapeManager::Draw(unsigned int shader) const
 
         glm::mat4 modelToWorld = shape.second->getModelToWorldMat();
         glUniformMatrix4fv(ulModelToWorld, 1, GL_FALSE, &modelToWorld[0][0]);
+        glm::mat4 normalTransform = glm::transpose(glm::inverse(modelToWorld));
+        glUniformMatrix4fv(ulNormalTransform, 1, GL_FALSE, &normalTransform[0][0]);
         glBindVertexArray(GetVao(shape.second->visual));
         glDrawElements(GL_TRIANGLES, GetIdxCount(shape.second->visual), GL_UNSIGNED_INT, 0);
     }

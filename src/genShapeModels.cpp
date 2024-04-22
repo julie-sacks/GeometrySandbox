@@ -7,9 +7,10 @@ using glm::uvec3;
 // generate a list of vertices in rings from bottom to top and its corresponding indices
 std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps)
 {
-    // vertices
+    // vertices + normals
     std::vector<vec3> pts;
-    pts.push_back(vec3(0,-1,0));
+    pts.push_back(vec3(0,-1,0)); // pos
+    pts.push_back(vec3(0,-1,0)); // norm
 
     // for each ring
     for(int i = 1; i < steps; ++i)
@@ -25,11 +26,13 @@ std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps)
             float x = r*sinf(horizangle);
             float z = r*cosf(horizangle);
 
-            pts.push_back(vec3(x,y,z));
+            pts.push_back(vec3(x,y,z)); // pos
+            pts.push_back(vec3(x,y,z)); // norm
         }
     }
 
-    pts.push_back(vec3(0,1,0));
+    pts.push_back(vec3(0,1,0)); // pos
+    pts.push_back(vec3(0,1,0)); // norm
 
     // incides
     std::vector<uvec3> idx;
@@ -63,9 +66,9 @@ std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps)
     // sanity check
     for(int i = 0; i < idx.size(); ++i)
     {
-        assert(idx[i].x < pts.size());
-        assert(idx[i].y < pts.size());
-        assert(idx[i].z < pts.size());
+        assert(idx[i].x < pts.size()/2);
+        assert(idx[i].y < pts.size()/2);
+        assert(idx[i].z < pts.size()/2);
     }
 
     return std::pair<std::vector<vec3>, std::vector<uvec3>>(pts, idx);
@@ -74,9 +77,10 @@ std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps)
 // almost identical to sphere, but one ring of tris always at full radius. (-1..1, 0..1, -1..1)
 std::pair<std::vector<glm::vec3>, std::vector<glm::uvec3>> GenCylinder(int steps)
 {
-    // vertices
+    // vertices + normals
     std::vector<vec3> pts;
-    pts.push_back(vec3(0,0,0));
+    pts.push_back(vec3(0,0,0));  // pos
+    pts.push_back(vec3(0,-1,0)); // norm
 
     // two rings of verts
     for(int i = 0; i < 2; ++i)
@@ -87,10 +91,12 @@ std::pair<std::vector<glm::vec3>, std::vector<glm::uvec3>> GenCylinder(int steps
         float x = sinf(horizangle);
         float z = cosf(horizangle);
 
-        pts.push_back(vec3(x,i,z));
+        pts.push_back(vec3(x,i,z)); // pos
+        pts.push_back(vec3(x,0,z)); // norm
     }
 
-    pts.push_back(vec3(0,1,0));
+    pts.push_back(vec3(0,1,0)); // pos
+    pts.push_back(vec3(0,1,0)); // norm
 
     // incides
     std::vector<uvec3> idx;
@@ -121,9 +127,9 @@ std::pair<std::vector<glm::vec3>, std::vector<glm::uvec3>> GenCylinder(int steps
     // sanity check
     for(int i = 0; i < idx.size(); ++i)
     {
-        assert(idx[i].x < pts.size());
-        assert(idx[i].y < pts.size());
-        assert(idx[i].z < pts.size());
+        assert(idx[i].x < pts.size()/2);
+        assert(idx[i].y < pts.size()/2);
+        assert(idx[i].z < pts.size()/2);
     }
 
     return std::pair<std::vector<vec3>, std::vector<uvec3>>(pts, idx);
