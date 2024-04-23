@@ -3,7 +3,9 @@
 #include <map>
 #include <vector>
 #include <glm/mat4x4.hpp>
-#include "collisions.h"
+//#include "collisions.h"
+
+struct Ray;
 
 enum class ShapeType
 {

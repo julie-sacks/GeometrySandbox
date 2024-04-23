@@ -1,6 +1,7 @@
 #include "midpoint.h"
 #include "shapeManager.h"
 #include "segment.h"
+#include "collisions.h"
 #include <glm/gtx/transform.hpp>
 
 Midpoint::Midpoint(int parent, float t) : GenericPoint(ShapeType::Midpoint), t(t)

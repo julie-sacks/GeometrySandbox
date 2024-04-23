@@ -2,6 +2,7 @@
 #include <glm/gtx/transform.hpp>
 #include "shapeManager.h"
 #include "genericPoint.h"
+#include "collisions.h"
 
 Segment::Segment(int parent1, int parent2) : GenericLine(ShapeType::Segment)
 {

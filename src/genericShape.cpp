@@ -1,4 +1,5 @@
 #include "genericShape.h"
+#include "collisions.h"
 #include <cassert>
 
 

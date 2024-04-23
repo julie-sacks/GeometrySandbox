@@ -1,4 +1,5 @@
 #include "point.h"
+#include "collisions.h"
 #include <glm/gtx/transform.hpp>
 
 Point::Point(glm::vec3 pos) : GenericPoint(ShapeType::Point), position(pos)
