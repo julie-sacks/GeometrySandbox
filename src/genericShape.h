@@ -57,7 +57,7 @@ protected:
     mutable bool isDirty;
     void SetDirty() const;
     mutable glm::mat4 modelToWorld;
-    virtual void Recalculate() const;
+    virtual void Recalculate() const = 0;
 public:
     ~GenericShape();
 

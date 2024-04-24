@@ -11,11 +11,6 @@ int GenericShape::getNextId()
     return idcount++;
 }
 
-void GenericShape::Recalculate() const
-{
-    isDirty = false;
-}
-
 GenericShape::GenericShape(ShapeType type, ShapeVisual visual) :
     type(type), visual(visual), id(getNextId()), isDirty(true)
 {
