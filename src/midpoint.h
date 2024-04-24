@@ -11,11 +11,12 @@ friend class ShapeManager;
 private:
     float t;
 
+protected:
+    void Recalculate() const override;
 public:
     Midpoint(int parent, float t);
     void SetT(float newt);
     float GetT() const;
     glm::vec3 GetPos() const override;
-    glm::mat4 getModelToWorldMat() const override;
     bool RayIntersects(const Ray& ray, float* t) const override;
 };

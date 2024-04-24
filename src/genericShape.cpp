@@ -1,5 +1,6 @@
 #include "genericShape.h"
 #include "collisions.h"
+#include "shapeManager.h"
 #include <cassert>
 
 
@@ -10,9 +11,23 @@ int GenericShape::getNextId()
     return idcount++;
 }
 
-GenericShape::GenericShape(ShapeType type, ShapeVisual visual) :
-    type(type), visual(visual), id(getNextId())
+void GenericShape::Recalculate() const
 {
+    isDirty = false;
+}
+
+GenericShape::GenericShape(ShapeType type, ShapeVisual visual) :
+    type(type), visual(visual), id(getNextId()), isDirty(true)
+{
+}
+
+void GenericShape::SetDirty() const
+{
+    isDirty = true;
+    for(int childId : children)
+    {
+        manager->GetShape(childId)->SetDirty();
+    }
 }
 
 GenericShape::~GenericShape()
@@ -77,6 +92,12 @@ void GenericShape::removeChild(int id)
         children.erase(it);
         break;
     }
+}
+
+glm::mat4 GenericShape::getModelToWorldMat() const
+{
+    if(isDirty) Recalculate();
+    return modelToWorld;
 }
 
 bool ShapeIdLess::operator()(const GenericShape *lhs, const GenericShape *rhs) const

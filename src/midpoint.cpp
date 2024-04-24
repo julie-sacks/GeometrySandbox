@@ -11,6 +11,7 @@ Midpoint::Midpoint(int parent, float t) : GenericPoint(ShapeType::Midpoint), t(t
 
 void Midpoint::SetT(float newt)
 {
+    SetDirty();
     t = dynamic_cast<GenericLine*>(manager->GetShape(parents[0]))->ClampToBounds(newt);
 }
 
@@ -38,9 +39,10 @@ glm::vec3 Midpoint::GetPos() const
     return glm::mix(p1, p2, t);
 }
 
-glm::mat4 Midpoint::getModelToWorldMat() const
+void Midpoint::Recalculate() const
 {
-    return glm::translate(GetPos());
+    isDirty = false;
+    modelToWorld = glm::translate(GetPos());
 }
 
 bool Midpoint::RayIntersects(const Ray& ray, float* t) const

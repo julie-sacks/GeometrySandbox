@@ -54,6 +54,10 @@ protected:
     ShapeManager* manager;
 
     GenericShape(ShapeType type, ShapeVisual visual);
+    mutable bool isDirty;
+    void SetDirty() const;
+    mutable glm::mat4 modelToWorld;
+    virtual void Recalculate() const;
 public:
     ~GenericShape();
 
@@ -70,7 +74,7 @@ public:
     void addChild(int id);
     void removeChild(int id);
 
-    virtual glm::mat4 getModelToWorldMat() const = 0;
+    glm::mat4 getModelToWorldMat() const;
 
     virtual bool RayIntersects(const Ray& ray, float* t) const = 0;
 };
