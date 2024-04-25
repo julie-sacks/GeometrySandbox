@@ -519,7 +519,7 @@ void CameraScene::Render(float dt)
     glm::mat4 worldToCam = glm::rotate(cameraRot.y, vec3(1,0,0)) *
                            glm::rotate(cameraRot.x, vec3(0,1,0)) *
                            glm::translate(-cameraPos);
-    glm::mat4 persp = glm::perspective((float)(80*(M_PI/180)), 1280.0f/720, 0.01f, 100.0f);
+    glm::mat4 persp = glm::perspective((float)(80*(M_PI/180)), ((float)windowWidth)/windowHeight, 0.01f, 100.0f);
 
     glClearColor(0.1f, 0.3f, 0.1f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -7,6 +7,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+Scene* scene;
+
+void WindowResizeCallback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+    scene->SetWindowSize(width, height);
+}
+
 int main(void)
 {
     printf("Hello world!\n");
@@ -24,9 +32,10 @@ int main(void)
         printf("couldn't create window. err %d: %s\n", err, msg);
         return 1;
     }
-    
-    glViewport(0,0,1280,720);
     glfwMakeContextCurrent(window);
+    glfwSetWindowSizeCallback(window, WindowResizeCallback);
+
+    glViewport(0,0,1280,720);
 
     GLenum err = glewInit();
     if(err != GLEW_OK)
@@ -36,7 +45,8 @@ int main(void)
     }
 
     printf("gl version: %s\n", glGetString(GL_VERSION));
-    Scene* scene = new CameraScene(window);
+    scene = new CameraScene(window);
+    scene->SetWindowSize(1280, 720);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();

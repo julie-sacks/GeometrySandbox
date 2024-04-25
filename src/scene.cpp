@@ -29,6 +29,11 @@ void Scene::Unload()
 {
 }
 
+void Scene::SetWindowSize(int width, int height)
+{
+    windowWidth = width;
+    windowHeight = height;
+}
 
 void Scene::RunFrame(float dt)
 {

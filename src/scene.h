@@ -8,6 +8,7 @@ private:
 
 protected:
     GLFWwindow* window;
+    int windowWidth, windowHeight;
 public:
     Scene(GLFWwindow* window_) : window(window_) {}
     // steps for running scene
@@ -18,6 +19,8 @@ public:
     virtual void PostRender(float dt);
     virtual void Shutdown();
     virtual void Unload();
+
+    void SetWindowSize(int width, int height);
 
     // wrapping methods. i don't think these need to be virtual
     void RunFrame(float dt); // Pre-Render -> Render -> PostRender
