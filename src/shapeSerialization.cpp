@@ -5,6 +5,7 @@
 #include "point.h"
 #include "segment.h"
 #include "midpoint.h"
+#include "line.h"
 
 using nlohmann::json;
 
@@ -47,6 +48,8 @@ bool ShapeManager::LoadFromFile(const char *path)
             type = ShapeType::Segment;
         if(typestr.compare("midpoint") == 0)
             type = ShapeType::Midpoint;
+        if(typestr.compare("line") == 0)
+            type = ShapeType::Line;
 
         assert(type != ShapeType::None);
 
@@ -78,6 +81,11 @@ bool ShapeManager::LoadFromFile(const char *path)
             assert(entry.at("position").is_number());
             float position = entry.at("position");
             dynamic_cast<Midpoint*>(shape)->t = position;
+        }   break;
+
+        case ShapeType::Line:
+        {
+            shape = new Line(0,0);
         }   break;
 
         default:
@@ -136,6 +144,11 @@ bool ShapeManager::SaveToFile(const char* path)
         {
             shapedata["type"] = "midpoint";
             shapedata["position"] = dynamic_cast<Midpoint*>(shape.second)->t;
+        }   break;
+
+        case ShapeType::Line:
+        {
+            shapedata["type"] = "line";
         }   break;
 
         default:

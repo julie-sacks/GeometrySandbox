@@ -119,6 +119,12 @@ const char* GetShapeTypeString(ShapeType type)
         return "Segment";
     case ShapeType::Midpoint:
         return "Midpoint";
+    case ShapeType::Line:
+        return "Line";
+    case ShapeType::Sphere:
+        return "Sphere";
+    case ShapeType::Circle:
+        return "Circle";
 
     default:
         return "Shape";
