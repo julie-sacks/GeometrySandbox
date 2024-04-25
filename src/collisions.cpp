@@ -51,7 +51,9 @@ bool Intersects(const Ray& ray, const SphereCollider& sphere, float* rt)
     return true;
 }
 
-bool Intersects(const Ray& ray, const CylinderCollider& cylinder, float *rt)
+// determines if a collision happened on the infinite cylinder, and in addition to the normal
+// collision results provides a parameter along the cylinder where the collision occurred
+float IntersectsCylinderRayTHelper(const Ray& ray, const LineCylinderCollider& cylinder, float* rt, float* cylinderT)
 {
     // find the slice of the (assumed infinite) cylinder perpendicular to the ray origin (contains circle)
     glm::vec3 raydirnorm = normalize(ray.direction);
@@ -83,16 +85,43 @@ bool Intersects(const Ray& ray, const CylinderCollider& cylinder, float *rt)
     // if it's negative then replace it with the second intersection
     if(t1 < 0) t1 = t2;
 
-    // then find point of intersection in 3d
-    // check if it falls within the cylinder's bounds on the parallel axis
-    // might run into problems here with the normalized direction vectors
-    glm::vec3 intersection = ray.origin + t1*ray.direction;
-    glm::vec3 p1tointersection = intersection - cylinder.p1;
-    // 0..1
-    float p1toidist = dot(p1tointersection, p1top2)/dot(p1top2, p1top2);
-    if(p1toidist < 0 || p1toidist > 1) return false;
 
     if(rt != nullptr) *rt = t1;
+
+    if(cylinderT != nullptr)
+    {
+        // find point of intersection in 3d
+        glm::vec3 intersection = ray.origin + t1*ray.direction;
+        // check where it falls within the cylinder's bounds on the parallel axis
+        glm::vec3 p1tointersection = intersection - cylinder.p1;
+        float p1toidist = dot(p1tointersection, p1top2)/dot(p1top2, p1top2);
+        *cylinderT = p1toidist;
+    }
+    return true;
+}
+
+bool Intersects(const Ray& ray, const SegmentCylinderCollider& cylinder, float* rt)
+{
+    float cylinderT;
+    if(!IntersectsCylinderRayTHelper(ray, LineCylinderCollider{cylinder.p1, cylinder.p2, cylinder.radius}, rt, &cylinderT))
+        return false;
+    if(cylinderT < 0 || cylinderT > 1) return false;
+
+    return true;
+}
+
+bool Intersects(const Ray& ray, const LineCylinderCollider& cylinder, float* rt)
+{
+    // don't need any more information for lines
+    return IntersectsCylinderRayTHelper(ray, cylinder, rt, nullptr);
+}
+
+bool Intersects(const Ray& ray, const RayCylinderCollider& cylinder, float* rt)
+{
+    float cylinderT;
+    if(!IntersectsCylinderRayTHelper(ray, LineCylinderCollider{cylinder.p1, cylinder.p2, cylinder.radius}, rt, &cylinderT))
+        return false;
+    if(cylinderT < 0) return false;
 
     return true;
 }
