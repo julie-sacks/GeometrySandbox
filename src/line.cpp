@@ -32,7 +32,7 @@ void Line::Recalculate() const
 
 bool Line::RayIntersects(const Ray &ray, float *t) const
 {
-    return Intersects(ray, LineCylinderCollider{p1, p2, 0.5f}, t);
+    return Intersects(ray, LineCylinderCollider{GetP1Pos(), GetP2Pos(), 0.5f}, t);
 }
 
 float Line::ClampToBounds(float param) const
