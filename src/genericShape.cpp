@@ -12,7 +12,7 @@ int GenericShape::getNextId()
 }
 
 GenericShape::GenericShape(ShapeType type, ShapeVisual visual) :
-    type(type), visual(visual), id(getNextId()), isDirty(true)
+    type(type), visual(visual), id(getNextId()), isDirty(true), isVisible(true)
 {
 }
 
@@ -93,6 +93,15 @@ glm::mat4 GenericShape::getModelToWorldMat() const
 {
     if(isDirty) Recalculate();
     return modelToWorld;
+}
+
+void GenericShape::SetVisibility(bool visible)
+{
+    isVisible = visible;
+}
+bool GenericShape::GetVisibility() const
+{
+    return isVisible;
 }
 
 bool ShapeIdLess::operator()(const GenericShape *lhs, const GenericShape *rhs) const

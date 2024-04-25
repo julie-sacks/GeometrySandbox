@@ -48,6 +48,7 @@ friend class ShapeManager;
 private:
     static int idcount;
     int getNextId();
+    bool isVisible;
 protected:
     std::vector<int> parents;
     std::vector<int> children;
@@ -75,6 +76,9 @@ public:
     void removeChild(int id);
 
     glm::mat4 getModelToWorldMat() const;
+
+    void SetVisibility(bool visible);
+    bool GetVisibility() const;
 
     virtual bool RayIntersects(const Ray& ray, float* t) const = 0;
 };

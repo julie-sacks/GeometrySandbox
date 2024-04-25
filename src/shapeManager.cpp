@@ -146,6 +146,7 @@ void ShapeManager::Draw(unsigned int shader) const
 
     for(auto& shape : shapeList)
     {
+        if(!GetShape(shape.first)->GetVisibility()) continue;
         glm::vec3 color(1,1,1);
         if(IsSelected(shape.first))
             color = glm::vec3(1,1,0);

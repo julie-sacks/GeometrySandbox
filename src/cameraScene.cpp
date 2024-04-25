@@ -235,6 +235,15 @@ void CameraScene::HandleInputs(float dt)
         lastSelected = -1;
     }
 
+    if(inputs.GetTriggered(GLFW_KEY_H))
+    {
+        for(int id : manager.GetSelected())
+        {
+            GenericShape* shape = manager.GetShape(id);
+            shape->SetVisibility(!shape->GetVisibility());
+        }
+    }
+
     if(inputs.GetTriggered(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
