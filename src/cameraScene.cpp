@@ -314,7 +314,7 @@ void CameraScene::SpawnMidpoint()
 {
     const std::vector<int>& selectedList = manager.GetSelected();
     if(selectedList.size() != 1) return;
-    if(manager.GetShape(selectedList[0])->type != ShapeType::Segment) return;
+    if(!manager.GetShape(selectedList[0])->IsLineLike()) return;
     manager.AddShape(new Midpoint(selectedList[0], 0.5f));
 }
 void CameraScene::SpawnLine()

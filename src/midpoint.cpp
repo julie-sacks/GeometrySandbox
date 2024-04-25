@@ -25,17 +25,12 @@ glm::vec3 Midpoint::GetPos() const
     glm::vec3 p1, p2;
     // future-proofing for different types of midpoint parents
     GenericShape* parent = manager->GetShape(parents[0]);
-    switch (parent->type)
+    if(parent->IsLineLike())
     {
-    case ShapeType::Segment:
-        p1 = dynamic_cast<Segment*>(parent)->GetP1Pos();
-        p2 = dynamic_cast<Segment*>(parent)->GetP2Pos();
-        break;
-    
-    default:
-        assert(false);
-        break;
+        p1 = dynamic_cast<GenericLine*>(parent)->GetP1Pos();
+        p2 = dynamic_cast<GenericLine*>(parent)->GetP2Pos();
     }
+    else assert(false);
     return glm::mix(p1, p2, t);
 }
 
