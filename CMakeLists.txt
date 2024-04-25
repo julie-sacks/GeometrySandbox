@@ -26,6 +26,7 @@ add_executable( ${TARGET_NAME}
         ./src/point.cpp
         ./src/segment.cpp
         ./src/midpoint.cpp
+        ./src/line.cpp
         ./src/genShapeModels.cpp
         ./src/pfd.cpp
         ./src/collisions.cpp
