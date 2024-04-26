@@ -6,6 +6,7 @@
 #include "segment.h"
 #include "midpoint.h"
 #include "line.h"
+#include "ray.h"
 
 using nlohmann::json;
 
@@ -50,6 +51,8 @@ bool ShapeManager::LoadFromFile(const char *path)
             type = ShapeType::Midpoint;
         if(typestr.compare("line") == 0)
             type = ShapeType::Line;
+        if(typestr.compare("ray") == 0)
+            type = ShapeType::Ray;
 
         assert(type != ShapeType::None);
 
@@ -86,6 +89,11 @@ bool ShapeManager::LoadFromFile(const char *path)
         case ShapeType::Line:
         {
             shape = new Line(0,0);
+        }   break;
+
+        case ShapeType::Ray:
+        {
+            shape = new Ray(0,0);
         }   break;
 
         default:
@@ -149,6 +157,11 @@ bool ShapeManager::SaveToFile(const char* path)
         case ShapeType::Line:
         {
             shapedata["type"] = "line";
+        }   break;
+
+        case ShapeType::Ray:
+        {
+            shapedata["type"] = "ray";
         }   break;
 
         default:
