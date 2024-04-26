@@ -17,6 +17,7 @@
 #include "segment.h"
 #include "midpoint.h"
 #include "line.h"
+#include "ray.h"
 
 #define GLM_SWIZZLE
 #include <glm/vec3.hpp>
@@ -328,6 +329,17 @@ void CameraScene::SpawnLine()
 
     manager.AddShape(new Line(selectedList[0], selectedList[1]));
 }
+void CameraScene::SpawnRay()
+{
+    const std::vector<int>& selectedList = manager.GetSelected();
+    if(selectedList.size() != 2) return;
+    for(int id : selectedList)
+    {
+        if(!manager.GetShape(id)->IsPointLike()) return;
+    }
+
+    manager.AddShape(new Ray(selectedList[0], selectedList[1]));
+}
 
 glm::vec3 CameraScene::GetCameraDir() const
 {
@@ -427,6 +439,8 @@ void CameraScene::GuiRender()
         if(ImGui::Button("Point   ")) SpawnPoint();
         if(ImGui::Button("Segment ")) SpawnSegment();
         if(ImGui::Button("Midpoint")) SpawnMidpoint();
+        if(ImGui::Button("Line    ")) SpawnLine();
+        if(ImGui::Button("Ray     ")) SpawnRay();
     } ImGui::End();
 
     char title[64] = "No selection###";
