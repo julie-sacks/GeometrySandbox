@@ -40,7 +40,7 @@ void Midpoint::Recalculate() const
     modelToWorld = glm::translate(GetPos());
 }
 
-bool Midpoint::RayIntersects(const Ray& ray, float* t) const
+bool Midpoint::RayIntersects(const CollisionRay& ray, float* t) const
 {
     return Intersects(ray, SphereCollider{GetPos(), 1}, t);
 }

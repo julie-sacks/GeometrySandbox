@@ -28,7 +28,7 @@ void Segment::Recalculate() const
     modelToWorld = translate*rotate*scale;
 }
 
-bool Segment::RayIntersects(const Ray& ray, float* t) const
+bool Segment::RayIntersects(const CollisionRay& ray, float* t) const
 {
     glm::vec3 p1 = GetP1Pos();
     glm::vec3 p2 = GetP2Pos();

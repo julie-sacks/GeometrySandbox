@@ -55,7 +55,7 @@ private:
     float movementSpeed;
     float fov;
     glm::vec3 GetCameraDir() const;
-    Ray ScreenToWorldRay(float x, float y) const;
+    CollisionRay ScreenToWorldRay(float x, float y) const;
 
     ShapeManager manager;
     int lastSelected;

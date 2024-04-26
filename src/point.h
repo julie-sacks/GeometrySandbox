@@ -17,5 +17,5 @@ public:
     Point(glm::vec3 pos);
     void SetPos(glm::vec3 pos);
     glm::vec3 GetPos() const override;
-    bool RayIntersects(const Ray& ray, float* t) const override;
+    bool RayIntersects(const CollisionRay& ray, float* t) const override;
 };

@@ -23,7 +23,7 @@ glm::vec3 Point::GetPos() const
     return position;
 }
 
-bool Point::RayIntersects(const Ray& ray, float* t) const
+bool Point::RayIntersects(const CollisionRay& ray, float* t) const
 {
     return Intersects(ray, SphereCollider{position, 1}, t);
 }

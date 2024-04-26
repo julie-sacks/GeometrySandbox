@@ -269,7 +269,7 @@ void CameraScene::ClickAndDragPoint(glm::vec2 dragStart, glm::vec2 dragEnd)
     Point* point = dynamic_cast<Point*>(manager.GetShape(lastSelected));
     glm::vec3 cameraToShape = point->GetPos() - cameraPos;
 
-    Ray newDir = ScreenToWorldRay(dragEnd.x, dragEnd.y);
+    CollisionRay newDir = ScreenToWorldRay(dragEnd.x, dragEnd.y);
     float distanceFromCam = glm::dot(GetCameraDir(), cameraToShape) / glm::dot(GetCameraDir(), newDir.direction);
 
     point->SetPos(cameraPos + newDir.direction*distanceFromCam);
@@ -278,7 +278,7 @@ void CameraScene::ClickAndDragPoint(glm::vec2 dragStart, glm::vec2 dragEnd)
 void CameraScene::ClickAndDragMidpoint(glm::vec2 dragStart, glm::vec2 dragEnd)
 {
     Midpoint* midpoint = dynamic_cast<Midpoint*>(manager.GetShape(lastSelected));
-    Ray clickray = ScreenToWorldRay(dragEnd.x, dragEnd.y);
+    CollisionRay clickray = ScreenToWorldRay(dragEnd.x, dragEnd.y);
     GenericLine* line = dynamic_cast<GenericLine*>(manager.GetShape(midpoint->getParents()[0]));
 
     glm::vec3 segdir = glm::normalize(line->GetP2Pos() - line->GetP1Pos());
@@ -337,7 +337,7 @@ glm::vec3 CameraScene::GetCameraDir() const
 }
 
 // TODO: for some reason the expected value is nearly exactly a factor of 1.1x away.
-Ray CameraScene::ScreenToWorldRay(float x, float y) const
+CollisionRay CameraScene::ScreenToWorldRay(float x, float y) const
 {
     // take the center position, then use a screen plane at a known distance from the camera
     // and add the offset on the screen plane to the cameraDir (scaled to unit distance)
@@ -352,7 +352,7 @@ Ray CameraScene::ScreenToWorldRay(float x, float y) const
                           glm::rotate(-cameraRot.y, vec3(1,0,0)) *
                           (glm::vec4(0,0,-1,0) + offset * ducttapeadjustment);
 
-    return Ray{cameraPos, glm::normalize(cameraDir)};
+    return CollisionRay{cameraPos, glm::normalize(cameraDir)};
 }
 
 bool CameraScene::OpenFileDialog()

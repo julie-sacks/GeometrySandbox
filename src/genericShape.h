@@ -5,7 +5,7 @@
 #include <glm/mat4x4.hpp>
 //#include "collisions.h"
 
-struct Ray;
+struct CollisionRay;
 
 enum class ShapeType
 {
@@ -80,5 +80,5 @@ public:
     void SetVisibility(bool visible);
     bool GetVisibility() const;
 
-    virtual bool RayIntersects(const Ray& ray, float* t) const = 0;
+    virtual bool RayIntersects(const CollisionRay& ray, float* t) const = 0;
 };

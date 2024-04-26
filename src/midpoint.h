@@ -18,5 +18,5 @@ public:
     void SetT(float newt);
     float GetT() const;
     glm::vec3 GetPos() const override;
-    bool RayIntersects(const Ray& ray, float* t) const override;
+    bool RayIntersects(const CollisionRay& ray, float* t) const override;
 };

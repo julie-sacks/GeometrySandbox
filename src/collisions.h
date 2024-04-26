@@ -2,7 +2,7 @@
 
 #include <glm/vec3.hpp>
 
-struct Ray
+struct CollisionRay
 {
     glm::vec3 origin;
     glm::vec3 direction;
@@ -34,7 +34,7 @@ struct RayCylinderCollider
 };
 
 
-bool Intersects(const Ray& ray, const SphereCollider& sphere, float *rt = nullptr);
-bool Intersects(const Ray& ray, const SegmentCylinderCollider& cylinder, float *rt = nullptr);
-bool Intersects(const Ray& ray, const LineCylinderCollider& cylinder, float *rt = nullptr);
-bool Intersects(const Ray& ray, const RayCylinderCollider& cylinder, float *rt = nullptr);
+bool Intersects(const CollisionRay& ray, const SphereCollider& sphere, float *rt = nullptr);
+bool Intersects(const CollisionRay& ray, const SegmentCylinderCollider& cylinder, float *rt = nullptr);
+bool Intersects(const CollisionRay& ray, const LineCylinderCollider& cylinder, float *rt = nullptr);
+bool Intersects(const CollisionRay& ray, const RayCylinderCollider& cylinder, float *rt = nullptr);

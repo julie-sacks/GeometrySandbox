@@ -14,6 +14,6 @@ protected:
     void Recalculate() const override;
 public:
     Line(int parent1, int parent2);
-    bool RayIntersects(const Ray& ray, float* t) const override;
+    bool RayIntersects(const CollisionRay& ray, float* t) const override;
     float ClampToBounds(float param) const override;
 };

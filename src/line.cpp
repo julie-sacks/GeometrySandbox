@@ -30,7 +30,7 @@ void Line::Recalculate() const
     modelToWorld = translate*rotate*scale;
 }
 
-bool Line::RayIntersects(const Ray &ray, float *t) const
+bool Line::RayIntersects(const CollisionRay &ray, float *t) const
 {
     return Intersects(ray, LineCylinderCollider{GetP1Pos(), GetP2Pos(), 0.5f}, t);
 }

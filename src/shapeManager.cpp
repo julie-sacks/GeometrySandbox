@@ -162,7 +162,7 @@ void ShapeManager::Draw(unsigned int shader) const
     glBindVertexArray(0);
 }
 
-int ShapeManager::SelectRaycast(const Ray& ray, bool multiselect)
+int ShapeManager::SelectRaycast(const CollisionRay& ray, bool multiselect)
 {
     if(!multiselect) selectedIds.clear();
 
