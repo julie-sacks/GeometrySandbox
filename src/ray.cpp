@@ -2,7 +2,7 @@
 #include "collisions.h"
 #include <glm/gtx/transform.hpp>
 
-Ray::Ray(int parent1, int parent2) : GenericLine(ShapeType::Line)
+Ray::Ray(int parent1, int parent2) : GenericLine(ShapeType::Ray)
 {
     parents.push_back(parent1);
     parents.push_back(parent2);

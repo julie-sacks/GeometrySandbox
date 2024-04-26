@@ -58,6 +58,8 @@ bool GenericShape::IsLineLike() const
         return true;
     case ShapeType::Line:
         return true;
+    case ShapeType::Ray:
+        return true;
     default:
         return false;
     }
@@ -121,6 +123,8 @@ const char* GetShapeTypeString(ShapeType type)
         return "Midpoint";
     case ShapeType::Line:
         return "Line";
+    case ShapeType::Ray:
+        return "Ray";
     case ShapeType::Sphere:
         return "Sphere";
     case ShapeType::Circle:

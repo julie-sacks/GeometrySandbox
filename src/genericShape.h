@@ -13,6 +13,7 @@ enum class ShapeType
     Point,
     Line,
     Segment,
+    Ray,
     Circle,
     Sphere,
     Midpoint,
