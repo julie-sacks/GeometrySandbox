@@ -38,6 +38,10 @@
 using glm::vec3;
 using glm::uvec3;
 
+static glm::vec2 torusradii{1,0.5f};
+static glm::mat4 testmat{1};
+static bool drawdebugshape = false;
+
 // generate a list of vertices in rings from bottom to top and its corresponding indices
 static std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps = 5)
 {
@@ -104,6 +108,59 @@ static std::pair<std::vector<vec3>, std::vector<uvec3>> GenSphere(int steps = 5)
 
     return std::pair<std::vector<vec3>, std::vector<uvec3>>(pts, idx);
 }
+
+// fake torus of 0 minor radius, 1 major radius
+static std::pair<std::vector<vec3>, std::vector<uvec3>> GenTorus(int steps = 16)
+{
+    /* start on outer middle (1,0,0)
+     * do smaller rings (0.75+0.25*cos(t),0.25*sin(t),0)
+     * rotate along torus (x*cos(u),y,z*sin(u))
+     *
+     * x = cos(u) * (0.75+0.25*cos(t))
+     * y = 0.25*sin(t)
+     * z = sin(u) + (0.75+0.25*cos(t))
+     */
+    constexpr float minorRadius = 1.0f;
+    constexpr float majorRadius = 1.0f;
+
+    std::vector<vec3> verts;
+    for(int i = 0; i < steps*2; ++i)
+    {
+        float majorangle = i * (2*M_PI)/(steps*2);
+        float xmul = cosf(majorangle);
+        float zmul = sinf(majorangle);
+        for(int j = 0; j < steps; ++j)
+        {
+            float minorangle = j * (2*M_PI)/(steps);
+            float x = xmul * (majorRadius + minorRadius * cosf(minorangle));
+            float y = minorRadius * sinf(minorangle);
+            float z = zmul * (majorRadius + minorRadius * cosf(minorangle));
+
+            //verts.push_back(vec3(x,y,z)); // pos
+            verts.push_back(vec3(xmul, 0, zmul)); // pos
+            vec3 norm = vec3(x,y,z) - vec3(xmul*majorRadius, 0, zmul*majorRadius);
+            verts.push_back(glm::normalize(norm)); // norm
+        }
+    }
+
+    std::vector<uvec3> idx;
+    for(int i = 0; i < steps*2; ++i)
+    {
+        for(int j = 0; j < steps; ++j)
+        {
+            int a = j+i*steps;
+            int b = (j+1)%steps+i*steps;
+            int c = j+((i+1)%(steps*2))*steps;
+            idx.push_back(uvec3(a,b,c));
+            a = b;
+            b = (j+1)%steps+((i+1)%(steps*2))*steps;
+            c = c;
+            idx.push_back(uvec3(a,b,c));
+        }
+    }
+    return std::pair<std::vector<vec3>, std::vector<uvec3>>(verts,idx);
+}
+
 
 void CameraScene::PollInputs()
 {
@@ -509,6 +566,22 @@ void CameraScene::GuiRender()
         
     } ImGui::End();
 
+    if(ImGui::Begin("transform test", nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus))
+    {
+        ImGui::Checkbox("Draw debug shape", &drawdebugshape);
+        ImGui::InputFloat2("major/minor", &torusradii[0]);
+
+        static glm::vec4 row0 = testmat[0];
+        static glm::vec4 row1 = testmat[1];
+        static glm::vec4 row2 = testmat[2];
+        static glm::vec4 row3 = testmat[3];
+        ImGui::InputFloat4("1", &row0[0]);
+        ImGui::InputFloat4("2", &row1[0]);
+        ImGui::InputFloat4("3", &row2[0]);
+        ImGui::InputFloat4("4", &row3[0]);
+        testmat = glm::mat4(row0, row1, row2, row3);
+    } ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -522,6 +595,24 @@ void CameraScene::Load()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+
+    auto data = GenTorus(16);
+    idxcount = data.second.size()*3;
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, data.first.size()*sizeof(glm::vec3), data.first.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.second.size()*sizeof(glm::uvec3), data.second.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
 }
 
 void CameraScene::Init()
@@ -542,7 +633,6 @@ void CameraScene::PreRender(float dt)
 
 void CameraScene::Render(float dt)
 {
-    glm::mat4 modelToWorld(1);
     glm::mat4 worldToCam = glm::rotate(cameraRot.y, vec3(1,0,0)) *
                            glm::rotate(cameraRot.x, vec3(0,1,0)) *
                            glm::translate(-cameraPos);
@@ -553,16 +643,42 @@ void CameraScene::Render(float dt)
     //printf("rendering camera scene\n");
     glUseProgram(shaderProgram);
 
-    GLint ulModelToWorld = glGetUniformLocation(shaderProgram, "modelToWorld");
     GLint ulWorldToCamera = glGetUniformLocation(shaderProgram, "worldToCamera");
     GLint ulCameraToNdc = glGetUniformLocation(shaderProgram, "cameraToNdc");
     GLint ulLightDir = glGetUniformLocation(shaderProgram, "lightDir");
 
-    glUniformMatrix4fv(ulModelToWorld, 1, false, &modelToWorld[0][0]);
     glUniformMatrix4fv(ulWorldToCamera, 1, false, &worldToCam[0][0]);
     glUniformMatrix4fv(ulCameraToNdc, 1, false, &persp[0][0]);
     vec3 lightDir = glm::normalize(vec3(1,2,3));
     glUniform3f(ulLightDir, lightDir.x, lightDir.y, lightDir.z);
+
+
+    if(drawdebugshape)
+    {
+        glm::mat4 modelToWorld = glm::transpose(testmat);
+        glm::mat4 normalTransform = glm::transpose(glm::inverse(modelToWorld));
+
+        GLint ulModelToWorld = glGetUniformLocation(shaderProgram, "modelToWorld");
+        GLint ulNormalTransform = glGetUniformLocation(shaderProgram, "normalTransform");
+        GLint ulBaseColor = glGetUniformLocation(shaderProgram, "baseColor");
+        GLint ulShapeVisual = glGetUniformLocation(shaderProgram, "shapeVisual");
+        GLint ulTorusMinorRadius = glGetUniformLocation(shaderProgram, "torusMinorRadius");
+        GLint ulTorusMajorRadius = glGetUniformLocation(shaderProgram, "torusMajorRadius");
+        
+        glUniformMatrix4fv(ulModelToWorld, 1, false, &modelToWorld[0][0]);
+        glUniformMatrix4fv(ulNormalTransform, 1, GL_FALSE, &normalTransform[0][0]);
+        glUniform3f(ulBaseColor, 1.f, 0.8f, 0.9f);
+        glUniform1i(ulShapeVisual, (int)ShapeVisual::Circle);
+        glUniform1f(ulTorusMajorRadius, torusradii[0]);
+        glUniform1f(ulTorusMinorRadius, torusradii[1]);
+
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, idxcount, GL_UNSIGNED_INT, (void*)0);
+        glBindVertexArray(0);
+        glUniform1i(ulShapeVisual, 0);
+
+    }
+
 
     manager.Draw(shaderProgram);
     glBindVertexArray(0);

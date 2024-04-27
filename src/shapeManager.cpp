@@ -138,11 +138,17 @@ const ShapeSet& ShapeManager::GetShapeList() const
 void ShapeManager::Draw(unsigned int shader) const
 {
     GLint ulModelToWorld = glGetUniformLocation(shader, "modelToWorld");
-    assert(ulModelToWorld != -1);
+    // assert(ulModelToWorld != -1);
     GLint ulNormalTransform = glGetUniformLocation(shader, "normalTransform");
-    assert(ulNormalTransform != -1);
+    // assert(ulNormalTransform != -1);
     GLint ulBaseColor = glGetUniformLocation(shader, "baseColor");
-    assert(ulBaseColor != -1);
+    // assert(ulBaseColor != -1);
+    GLint ulShapeVisual = glGetUniformLocation(shader, "shapeVisual");
+    // assert(ulShapeVisual != -1);
+    GLint ulTorusMinorRadius = glGetUniformLocation(shader, "torusMinorRadius");
+    // assert(ulTorusMinorRadius != -1);
+    GLint ulTorusMajorRadius = glGetUniformLocation(shader, "torusMajorRadius");
+    // assert(ulTorusMajorRadius != -1);
 
     for(auto& shape : shapeList)
     {
@@ -151,6 +157,13 @@ void ShapeManager::Draw(unsigned int shader) const
         if(IsSelected(shape.first))
             color = glm::vec3(1,1,0);
         glUniform3fv(ulBaseColor, 1, &color[0]);
+
+        glUniform1i(ulShapeVisual, (int)ShapeVisual::Circle);
+        if(shape.second->visual == ShapeVisual::Circle)
+        {
+            // glUniform1f(ulTorusMajorRadius, torusradii[0]);
+            // glUniform1f(ulTorusMinorRadius, torusradii[1]);
+        }
 
         glm::mat4 modelToWorld = shape.second->getModelToWorldMat();
         glUniformMatrix4fv(ulModelToWorld, 1, GL_FALSE, &modelToWorld[0][0]);
