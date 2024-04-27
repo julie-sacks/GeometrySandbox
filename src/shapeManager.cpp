@@ -158,7 +158,7 @@ void ShapeManager::Draw(unsigned int shader) const
             color = glm::vec3(1,1,0);
         glUniform3fv(ulBaseColor, 1, &color[0]);
 
-        glUniform1i(ulShapeVisual, (int)ShapeVisual::Circle);
+        glUniform1i(ulShapeVisual, (int)shape.second->visual);
         if(shape.second->visual == ShapeVisual::Circle)
         {
             // glUniform1f(ulTorusMajorRadius, torusradii[0]);
