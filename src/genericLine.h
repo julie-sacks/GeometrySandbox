@@ -6,6 +6,7 @@ class GenericLine : public GenericShape
 {
 protected:
     GenericLine(ShapeType type);
+    glm::mat4 GetRotationMat() const;
 public:
     virtual glm::vec3 GetP1Pos() const;
     virtual glm::vec3 GetP2Pos() const;

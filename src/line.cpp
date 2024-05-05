@@ -21,9 +21,7 @@ void Line::Recalculate() const
     // scale by 0.5x -> rotate (0,1,0) to p2 -> translate to p1
     glm::mat4 scale = glm::scale(glm::vec3(0.5f, glm::length(p2-p1), 0.5f));
 
-    glm::vec3 dir = glm::normalize(p2-p1);
-    glm::vec3 crossp = glm::cross(glm::vec3(0,1,0), glm::normalize(GetP2Pos()-GetP1Pos()));
-    glm::mat4 rotate = glm::rotate(acosf(glm::dot(glm::vec3(0,1,0), dir)), crossp);
+    glm::mat4 rotate = GetRotationMat();
 
     glm::mat4 translate = glm::translate(p1);
 
