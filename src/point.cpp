@@ -14,6 +14,7 @@ Point::Point(glm::vec3 pos) : GenericPoint(ShapeType::Point), position(pos)
 
 void Point::SetPos(glm::vec3 pos)
 {
+    if(pos == position) return;
     SetDirty();
     position = pos;
 }
