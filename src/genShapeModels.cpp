@@ -1,5 +1,6 @@
 #include "genShapeModels.h"
 #include <cmath>
+#include <glm/glm.hpp>
 
 using glm::vec3;
 using glm::uvec3;
@@ -134,3 +135,55 @@ std::pair<std::vector<glm::vec3>, std::vector<glm::uvec3>> GenCylinder(int steps
 
     return std::pair<std::vector<vec3>, std::vector<uvec3>>(pts, idx);
 }
+
+std::pair<std::vector<vec3>, std::vector<uvec3>> GenTorus(int steps)
+{
+    /* start on outer middle (1,0,0)
+     * do smaller rings (0.75+0.25*cos(t),0.25*sin(t),0)
+     * rotate along torus (x*cos(u),y,z*sin(u))
+     *
+     * x = cos(u) * (0.75+0.25*cos(t))
+     * y = 0.25*sin(t)
+     * z = sin(u) + (0.75+0.25*cos(t))
+     */
+    constexpr float minorRadius = 1.0f;
+    constexpr float majorRadius = 1.0f;
+
+    std::vector<vec3> verts;
+    for(int i = 0; i < steps*2; ++i)
+    {
+        float majorangle = i * (2*M_PI)/(steps*2);
+        float xmul = cosf(majorangle);
+        float zmul = sinf(majorangle);
+        for(int j = 0; j < steps; ++j)
+        {
+            float minorangle = j * (2*M_PI)/(steps);
+            float x = xmul * (majorRadius + minorRadius * cosf(minorangle));
+            float y = minorRadius * sinf(minorangle);
+            float z = zmul * (majorRadius + minorRadius * cosf(minorangle));
+
+            //verts.push_back(vec3(x,y,z)); // pos
+            verts.push_back(vec3(xmul, 0, zmul)); // pos
+            vec3 norm = vec3(x,y,z) - vec3(xmul*majorRadius, 0, zmul*majorRadius);
+            verts.push_back(glm::normalize(norm)); // norm
+        }
+    }
+
+    std::vector<uvec3> idx;
+    for(int i = 0; i < steps*2; ++i)
+    {
+        for(int j = 0; j < steps; ++j)
+        {
+            int a = j+i*steps;
+            int b = (j+1)%steps+i*steps;
+            int c = j+((i+1)%(steps*2))*steps;
+            idx.push_back(uvec3(a,b,c));
+            a = b;
+            b = (j+1)%steps+((i+1)%(steps*2))*steps;
+            c = c;
+            idx.push_back(uvec3(a,b,c));
+        }
+    }
+    return std::pair<std::vector<vec3>, std::vector<uvec3>>(verts,idx);
+}
+

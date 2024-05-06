@@ -5,6 +5,7 @@
 #include <cassert>
 #include "point.h"
 #include <limits>
+#include "genericCircle.h"
 
 
 void ShapeManager::GenVao(ShapeVisual visual) const
@@ -18,6 +19,10 @@ void ShapeManager::GenVao(ShapeVisual visual) const
 
     case ShapeVisual::Line:
         data = GenCylinder();
+        break;
+
+    case ShapeVisual::Circle:
+        data = GenTorus();
         break;
 
     default:
@@ -161,8 +166,8 @@ void ShapeManager::Draw(unsigned int shader) const
         glUniform1i(ulShapeVisual, (int)shape.second->visual);
         if(shape.second->visual == ShapeVisual::Circle)
         {
-            // glUniform1f(ulTorusMajorRadius, torusradii[0]);
-            // glUniform1f(ulTorusMinorRadius, torusradii[1]);
+            glUniform1f(ulTorusMajorRadius, dynamic_cast<GenericCircle*>(shape.second)->GetRadius());
+            glUniform1f(ulTorusMinorRadius, 0.5f);
         }
 
         glm::mat4 modelToWorld = shape.second->getModelToWorldMat();

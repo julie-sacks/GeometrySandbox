@@ -49,6 +49,7 @@ private:
     void SpawnMidpoint();
     void SpawnLine();
     void SpawnRay();
+    void SpawnCircle();
 
     // camera variables
     glm::vec3 cameraPos;

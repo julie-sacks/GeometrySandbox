@@ -17,6 +17,7 @@ add_executable( ${TARGET_NAME}
         ./src/genericShape.cpp
         ./src/genericPoint.cpp
         ./src/genericLine.cpp
+        ./src/genericCircle.cpp
         ./src/scene.cpp
         ./src/testScene.cpp
         ./src/shader.cpp
@@ -28,6 +29,7 @@ add_executable( ${TARGET_NAME}
         ./src/midpoint.cpp
         ./src/line.cpp
         ./src/ray.cpp
+        ./src/circleAxisRadius.cpp
         ./src/genShapeModels.cpp
         ./src/pfd.cpp
         ./src/collisions.cpp

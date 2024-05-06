@@ -18,6 +18,7 @@
 #include "midpoint.h"
 #include "line.h"
 #include "ray.h"
+#include "circleAxisRadius.h"
 
 #define GLM_SWIZZLE
 #include <glm/vec3.hpp>
@@ -397,6 +398,16 @@ void CameraScene::SpawnRay()
 
     manager.AddShape(new Ray(selectedList[0], selectedList[1]));
 }
+void CameraScene::SpawnCircle()
+{
+    const std::vector<int>& selectedList = manager.GetSelected();
+    if(selectedList.size() != 2) return;
+    
+    if(!manager.GetShape(selectedList[0])->IsLineLike())  return;
+    if(!manager.GetShape(selectedList[1])->IsPointLike()) return;
+
+    manager.AddShape(new CircleAxisRadius(selectedList[0], selectedList[1]));
+}
 
 glm::vec3 CameraScene::GetCameraDir() const
 {
@@ -498,6 +509,7 @@ void CameraScene::GuiRender()
         if(ImGui::Button("Midpoint")) SpawnMidpoint();
         if(ImGui::Button("Line    ")) SpawnLine();
         if(ImGui::Button("Ray     ")) SpawnRay();
+        if(ImGui::Button("Circle  ")) SpawnCircle();
     } ImGui::End();
 
     char title[64] = "No selection###";
