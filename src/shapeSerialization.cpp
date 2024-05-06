@@ -7,6 +7,7 @@
 #include "midpoint.h"
 #include "line.h"
 #include "ray.h"
+#include "circleAxisRadius.h"
 
 using nlohmann::json;
 
@@ -53,6 +54,8 @@ bool ShapeManager::LoadFromFile(const char *path)
             type = ShapeType::Line;
         if(typestr.compare("ray") == 0)
             type = ShapeType::Ray;
+        if(typestr.compare("circlear") == 0)
+            type = ShapeType::CircleAR;
 
         assert(type != ShapeType::None);
 
@@ -94,6 +97,11 @@ bool ShapeManager::LoadFromFile(const char *path)
         case ShapeType::Ray:
         {
             shape = new Ray(0,0);
+        }   break;
+
+        case ShapeType::CircleAR:
+        {
+            shape = new CircleAxisRadius(0,0);
         }   break;
 
         default:
@@ -162,6 +170,11 @@ bool ShapeManager::SaveToFile(const char* path)
         case ShapeType::Ray:
         {
             shapedata["type"] = "ray";
+        }   break;
+
+        case ShapeType::CircleAR:
+        {
+            shapedata["type"] = "circlear";
         }   break;
 
         default:

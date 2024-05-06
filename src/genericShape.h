@@ -14,7 +14,7 @@ enum class ShapeType
     Line,
     Segment,
     Ray,
-    Circle,
+    CircleAR,
     Sphere,
     Midpoint,
 

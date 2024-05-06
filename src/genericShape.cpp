@@ -127,7 +127,7 @@ const char* GetShapeTypeString(ShapeType type)
         return "Ray";
     case ShapeType::Sphere:
         return "Sphere";
-    case ShapeType::Circle:
+    case ShapeType::CircleAR:
         return "Circle";
 
     default:

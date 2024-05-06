@@ -24,7 +24,7 @@ void CircleAxisRadius::Recalculate() const
     modelToWorld = glm::translate(center) * rotate;
 }
 
-CircleAxisRadius::CircleAxisRadius(int center, int outer) : GenericCircle(ShapeType::Circle)
+CircleAxisRadius::CircleAxisRadius(int center, int outer) : GenericCircle(ShapeType::CircleAR)
 {
     parents.push_back(center);
     parents.push_back(outer);
